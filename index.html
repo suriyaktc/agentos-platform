@@ -1515,7 +1515,8 @@ async function testConnection() {
       body: JSON.stringify({
         model,
         max_tokens: 20,
-        messages: [{ role: 'user', content: 'Reply with only: OK' }]
+        messages: [{ role: 'user', content: 'Say ONLY OK. No extra words.'
+                    }]
       })
     });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
