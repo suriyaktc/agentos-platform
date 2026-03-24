@@ -1035,7 +1035,29 @@ Jul,68000,540,5.9,138</textarea>
               <div class="range-val" id="cfg-temp-val">0.7</div>
             </div>
           </div>
-          <button class="btn btn-ghost" onclick="testConnection()" style="width:100%;justify-content:center">◎ Test API Connection</button>
+          <button class="btn btn-ghost" onclick="async function testConnection() {
+  try {
+    const res = await fetch(window.location.origin + '/api/claude', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [
+          { role: 'user', content: 'Say ONLY OK. No extra words.' }
+        ]
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error?.message || 'API failed');
+    }
+
+    alert('✅ API Connected');
+  } catch (err) {
+    alert('❌ ' + err.message);
+  }
+}" style="width:100%;justify-content:center">◎ Test API Connection</button>
           <div id="cfg-test-result" style="margin-top:10px;font-family:var(--mono);font-size:0.7rem;display:none"></div>
         </div>
 
