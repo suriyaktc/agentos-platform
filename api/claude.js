@@ -31,14 +31,23 @@ export default async function handler(req, res) {
       })
     });
 
-    const data = await response.json();
+   // 1. Get the content type to ensure we aren't trying to parse HTML as JSON
+    const contentType = response.headers.get("content-type");
+    let data;
 
-    // 🔥 Proper error handling (IMPORTANT)
+    if (contentType && contentType.includes("application/json")) {
+      data = await response.json();
+    } else {
+      const textError = await response.text();
+      return res.status(response.status).json({ 
+        error: { message: "Groq returned a non-JSON response. Check your API key or Rate Limits.", details: textError } 
+      });
+    }
+
+    // 2. If Groq says "Unauthorized" (401), pass that message to the frontend clearly
     if (!response.ok) {
-      return res.status(response.status).json({
-        error: {
-          message: data?.error?.message || "Groq API error"
-        }
+      return res.status(response.status).json({ 
+        error: { message: data.error?.message || "API request failed", status: response.status } 
       });
     }
 
