@@ -1569,6 +1569,32 @@ async function runAllAgents() {
 
 // Init
 addLog('system', 'AgentOS v2.0 initialized — all systems operational', 'success');
+  async function testConnection() {
+  try {
+    const res = await fetch(window.location.origin + '/api/claude', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        messages: [
+          { role: 'user', content: 'Say ONLY OK. No extra words.' }
+        ]
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error?.message || 'API failed');
+    }
+
+    alert('✅ API Connected');
+  } catch (err) {
+    console.error(err);
+    alert('❌ Failed: ' + err.message);
+  }
+}
 </script>
 </body>
 </html>
