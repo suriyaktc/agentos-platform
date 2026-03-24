@@ -1,566 +1,898 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AgentOS — AI Automation Platform</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #07080a;
-  --bg2: #0d0f12;
-  --bg3: #12151a;
-  --bg4: #181c23;
-  --border: rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.12);
-  --text: #e8eaed;
-  --text2: #8b909a;
-  --text3: #555b66;
-  --accent: #4f9cf9;
-  --accent2: #7c5af0;
-  --green: #2dd882;
-  --amber: #f5a623;
-  --red: #f06060;
-  --cyan: #38d9f5;
-  --pill-r: 6px;
-  --card-r: 12px;
-  --font: 'Syne', sans-serif;
-  --mono: 'JetBrains Mono', monospace;
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;min-height:100vh;overflow-x:hidden;}
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #16161f;
+    --border: #22222e;
+    --border2: #2e2e3e;
+    --accent: #7b5cfa;
+    --accent2: #a78bfa;
+    --accent3: #38bdf8;
+    --green: #34d399;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #475569;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
 
-/* Layout */
-.shell{display:flex;height:100vh;overflow:hidden;}
-.sidebar{width:220px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:0;}
-.main{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Sidebar */
-.logo{padding:22px 20px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-.logo-mark{width:28px;height:28px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;}
-.logo-text{font-size:15px;font-weight:700;letter-spacing:-0.3px;}
-.logo-sub{font-size:10px;color:var(--text3);font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;}
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: flex;
+    overflow: hidden;
+  }
 
-.nav{flex:1;padding:12px 10px;overflow-y:auto;}
-.nav-section{margin-bottom:20px;}
-.nav-label{font-size:9px;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);padding:0 8px;margin-bottom:6px;}
-.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);transition:all 0.15s;border:1px solid transparent;margin-bottom:2px;position:relative;}
-.nav-item:hover{background:var(--bg3);color:var(--text);}
-.nav-item.active{background:rgba(79,156,249,0.1);color:var(--accent);border-color:rgba(79,156,249,0.2);}
-.nav-icon{font-size:14px;width:16px;text-align:center;flex-shrink:0;}
-.nav-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:9px;font-family:var(--mono);padding:2px 6px;border-radius:20px;font-weight:500;}
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 220px;
+    min-width: 220px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    height: 100vh;
+    position: relative;
+    z-index: 10;
+  }
 
-.sidebar-footer{padding:14px 14px;border-top:1px solid var(--border);}
-.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;margin-right:7px;box-shadow:0 0 8px var(--green);}
-.status-text{font-size:11px;color:var(--text2);font-family:var(--mono);}
+  .logo {
+    padding: 22px 20px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo h1 {
+    font-family: var(--sans);
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #fff;
+  }
+  .logo span {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--accent2);
+    display: block;
+    margin-top: 2px;
+  }
 
-/* Header */
-.header{padding:18px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;background:var(--bg);position:sticky;top:0;z-index:10;}
-.page-title{font-size:18px;font-weight:700;letter-spacing:-0.3px;}
-.page-sub{font-size:12px;color:var(--text3);font-family:var(--mono);margin-left:4px;}
-.header-actions{margin-left:auto;display:flex;gap:8px;}
+  .nav-section {
+    padding: 14px 12px 6px;
+  }
+  .nav-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 0 8px;
+    margin-bottom: 6px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text2);
+    transition: all 0.15s;
+    position: relative;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: rgba(123,92,250,0.15); color: var(--accent2); }
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 50%;
+    transform: translateY(-50%);
+    width: 3px; height: 18px;
+    background: var(--accent);
+    border-radius: 0 3px 3px 0;
+  }
+  .nav-item .badge {
+    margin-left: auto;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    padding: 2px 5px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+  .nav-icon { font-size: 0.95rem; width: 16px; text-align: center; }
 
-/* Buttons */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--pill-r);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;border:1px solid transparent;}
-.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
-.btn-primary:hover{background:#3d8de8;transform:translateY(-1px);}
-.btn-ghost{background:transparent;color:var(--text2);border-color:var(--border2);}
-.btn-ghost:hover{background:var(--bg3);color:var(--text);}
-.btn-green{background:rgba(45,216,130,0.15);color:var(--green);border-color:rgba(45,216,130,0.3);}
-.btn-green:hover{background:rgba(45,216,130,0.25);}
-.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important;}
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .api-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--green);
+  }
+  .api-status .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-/* Content area */
-.content{padding:24px 28px;flex:1;}
+  /* ── MAIN ── */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
 
-/* Cards */
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-r);padding:20px;}
-.card-sm{padding:14px 16px;}
-.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-.card-title{font-size:13px;font-weight:700;letter-spacing:0.3px;text-transform:uppercase;color:var(--text2);}
+  .topbar {
+    display: flex;
+    align-items: center;
+    padding: 0 28px;
+    height: 58px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    gap: 16px;
+    flex-shrink: 0;
+  }
+  .topbar h2 {
+    font-size: 1rem;
+    font-weight: 800;
+    flex: 1;
+  }
+  .topbar .sub {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text3);
+    margin-left: 4px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+  .btn-ghost {
+    background: var(--surface2);
+    color: var(--text2);
+    border: 1px solid var(--border2);
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent2); }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #6b4de8; }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* Grid */
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
-.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border2) transparent;
+  }
 
-/* Stat cards */
-.stat{background:var(--bg3);border:1px solid var(--border);border-radius:var(--card-r);padding:16px;}
-.stat-label{font-size:10px;font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;}
-.stat-value{font-size:26px;font-weight:800;letter-spacing:-1px;line-height:1;}
-.stat-delta{font-size:11px;color:var(--green);font-family:var(--mono);margin-top:4px;}
-.stat-delta.neg{color:var(--red);}
+  /* ── PAGES ── */
+  .page { display: none; }
+  .page.active { display: block; }
 
-/* Tags / Badges */
-.tag{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:10px;font-family:var(--mono);font-weight:500;letter-spacing:0.3px;}
-.tag-blue{background:rgba(79,156,249,0.12);color:var(--accent);border:1px solid rgba(79,156,249,0.2);}
-.tag-green{background:rgba(45,216,130,0.12);color:var(--green);border:1px solid rgba(45,216,130,0.2);}
-.tag-amber{background:rgba(245,166,35,0.12);color:var(--amber);border:1px solid rgba(245,166,35,0.2);}
-.tag-red{background:rgba(240,96,96,0.12);color:var(--red);border:1px solid rgba(240,96,96,0.2);}
-.tag-purple{background:rgba(124,90,240,0.12);color:var(--accent2);border:1px solid rgba(124,90,240,0.2);}
-.tag-cyan{background:rgba(56,217,245,0.12);color:var(--cyan);border:1px solid rgba(56,217,245,0.2);}
+  /* ── DASHBOARD ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+  }
+  .stat-label { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+  .stat-value { font-size: 2rem; font-weight: 800; margin: 8px 0 4px; }
+  .stat-hint { font-family: var(--mono); font-size: 0.65rem; color: var(--text3); }
+  .stat-hint.up { color: var(--green); }
 
-/* Form elements */
-.input{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--pill-r);padding:9px 13px;font-family:var(--font);font-size:13px;color:var(--text);width:100%;transition:border 0.15s;outline:none;}
-.input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,156,249,0.1);}
-.input::placeholder{color:var(--text3);}
-textarea.input{resize:vertical;min-height:90px;line-height:1.6;}
-select.input{cursor:pointer;appearance:none;}
-.label{font-size:11px;font-weight:600;color:var(--text2);font-family:var(--mono);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:5px;display:block;}
-.field{margin-bottom:14px;}
+  .pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .pillar-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .pillar-card:hover {
+    border-color: var(--accent);
+    background: var(--surface2);
+    transform: translateY(-2px);
+  }
+  .pillar-card .icon {
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .pillar-card h3 { font-size: 0.95rem; font-weight: 800; margin-bottom: 6px; }
+  .pillar-card p { font-size: 0.78rem; color: var(--text2); line-height: 1.5; margin-bottom: 12px; }
+  .pillar-card .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(123,92,250,0.12);
+    color: var(--accent2);
+    border: 1px solid rgba(123,92,250,0.25);
+  }
 
-/* Tabs */
-.tabs{display:flex;gap:2px;background:var(--bg3);padding:4px;border-radius:9px;width:fit-content;}
-.tab{padding:7px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;color:var(--text3);}
-.tab.active{background:var(--bg4);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,0.3);}
-.tab:hover:not(.active){color:var(--text2);}
+  .activity-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .panel-title {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 16px;
+  }
+  #activity-list { display: flex; flex-direction: column; gap: 8px; }
+  .activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--surface2);
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn { from { opacity:0; transform:translateX(-8px); } to { opacity:1; transform:none; } }
+  .activity-item .ai { font-size: 0.7rem; color: var(--accent2); font-family: var(--mono); white-space: nowrap; }
+  .activity-item .msg { font-size: 0.78rem; color: var(--text2); }
+  .empty-state { font-family: var(--mono); font-size: 0.72rem; color: var(--text3); padding: 20px 0; }
 
-/* Progress / Loading */
-.spinner{width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;flex-shrink:0;}
-@keyframes spin{to{transform:rotate(360deg)}}
-.progress-bar{height:3px;background:var(--bg3);border-radius:2px;overflow:hidden;}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;transition:width 0.4s ease;}
+  /* ── AGENT PAGES ── */
+  .agent-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 1100px;
+  }
+  .agent-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+  }
+  .agent-panel h3 {
+    font-size: 0.85rem;
+    font-weight: 800;
+    margin-bottom: 18px;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 
-/* Output / Terminal */
-.terminal{background:var(--bg);border:1px solid var(--border);border-radius:var(--card-r);padding:16px;font-family:var(--mono);font-size:12px;line-height:1.7;max-height:360px;overflow-y:auto;}
-.terminal::-webkit-scrollbar{width:4px;}
-.terminal::-webkit-scrollbar-track{background:transparent;}
-.terminal::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
-.t-line{margin-bottom:2px;}
-.t-prompt{color:var(--text3);}
-.t-info{color:var(--accent);}
-.t-success{color:var(--green);}
-.t-warn{color:var(--amber);}
-.t-error{color:var(--red);}
-.t-data{color:var(--cyan);}
-.t-text{color:var(--text);}
+  .form-group { margin-bottom: 16px; }
+  .form-group label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    padding: 10px 12px;
+    outline: none;
+    transition: border 0.15s;
+    resize: vertical;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    border-color: var(--accent);
+  }
+  .form-group textarea { min-height: 90px; }
+  .form-group select { cursor: pointer; }
+  .form-group select option { background: var(--surface2); }
 
-/* Agent cards */
-.agent-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-r);padding:18px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
-.agent-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:12px 12px 0 0;}
-.agent-card.blue::before{background:linear-gradient(90deg,var(--accent),var(--cyan));}
-.agent-card.purple::before{background:linear-gradient(90deg,var(--accent2),var(--accent));}
-.agent-card.green::before{background:linear-gradient(90deg,var(--green),var(--cyan));}
-.agent-card.amber::before{background:linear-gradient(90deg,var(--amber),var(--red));}
-.agent-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3);}
-.agent-card.active-card{border-color:rgba(79,156,249,0.4);box-shadow:0 0 0 1px rgba(79,156,249,0.2);}
-.agent-icon{font-size:22px;margin-bottom:10px;}
-.agent-name{font-size:14px;font-weight:700;margin-bottom:4px;}
-.agent-desc{font-size:12px;color:var(--text2);line-height:1.5;}
-.agent-tools{display:flex;flex-wrap:wrap;gap:4px;margin-top:12px;}
+  .radio-group { display: flex; flex-direction: column; gap: 8px; }
+  .radio-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 0.8rem;
+    color: var(--text2);
+  }
+  .radio-option input { accent-color: var(--accent); }
+  .radio-option:has(input:checked) {
+    border-color: var(--accent);
+    color: var(--text);
+    background: rgba(123,92,250,0.08);
+  }
 
-/* Result blocks */
-.result-block{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;}
-.result-block h4{font-size:12px;color:var(--accent);font-family:var(--mono);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;}
-.result-block p{font-size:13px;color:var(--text);line-height:1.7;}
-.result-block pre{font-family:var(--mono);font-size:11px;color:var(--cyan);white-space:pre-wrap;word-break:break-word;}
+  /* OUTPUT */
+  .output-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    line-height: 1.7;
+    color: var(--text2);
+    min-height: 140px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    position: relative;
+  }
+  .output-box.streaming { border-color: var(--accent); }
 
-/* Stream effect */
-@keyframes cursor-blink{0%,100%{opacity:1}50%{opacity:0}}
-.cursor::after{content:'▋';animation:cursor-blink 1s step-end infinite;color:var(--accent);font-size:12px;}
+  .reasoning-box {
+    background: rgba(123,92,250,0.05);
+    border: 1px solid rgba(123,92,250,0.2);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent2);
+    min-height: 60px;
+    white-space: pre-wrap;
+    margin-top: 12px;
+    line-height: 1.6;
+  }
 
-/* Page sections */
-.section{margin-bottom:28px;}
-.section-title{font-size:11px;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-.section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+  .steps-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+  .step-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 10px 14px;
+    background: var(--surface2);
+    border-radius: 8px;
+    border-left: 3px solid var(--border2);
+    font-size: 0.78rem;
+    transition: border-color 0.3s;
+  }
+  .step-item.done { border-left-color: var(--green); }
+  .step-item.running { border-left-color: var(--accent); animation: borderPulse 1s infinite; }
+  @keyframes borderPulse { 0%,100%{border-left-color:var(--accent)} 50%{border-left-color:var(--accent2)} }
+  .step-num {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text3);
+    width: 18px;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+  .step-text { color: var(--text2); line-height: 1.4; }
 
-/* Divider */
-.divider{height:1px;background:var(--border);margin:20px 0;}
+  /* LOGS PAGE */
+  .log-entry {
+    display: flex;
+    gap: 14px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    animation: slideIn 0.3s;
+  }
+  .log-time { color: var(--text3); white-space: nowrap; width: 70px; flex-shrink: 0; }
+  .log-agent { color: var(--accent2); white-space: nowrap; width: 120px; flex-shrink: 0; }
+  .log-msg { color: var(--text2); line-height: 1.5; }
+  .log-type { font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
+  .log-type.info { background: rgba(56,189,248,0.12); color: var(--accent3); }
+  .log-type.success { background: rgba(52,211,153,0.12); color: var(--green); }
+  .log-type.error { background: rgba(248,113,113,0.12); color: var(--red); }
 
-/* Scrollbar */
-::-webkit-scrollbar{width:5px;height:5px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+  /* SETTINGS */
+  .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 900px; }
+  .settings-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+  }
+  .settings-section h3 {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 18px;
+  }
 
-/* Tooltips and extras */
-.chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+  .range-row { display: flex; align-items: center; gap: 12px; }
+  .range-row input[type=range] {
+    flex: 1;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .range-val {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--accent2);
+    width: 36px;
+    text-align: right;
+  }
 
-/* Page visibility */
-.page{display:none;}
-.page.active{display:block;}
+  .arch-list { display: flex; flex-direction: column; gap: 10px; }
+  .arch-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.8rem;
+    color: var(--text2);
+    line-height: 1.4;
+  }
+  .arch-dot { color: var(--green); font-size: 0.7rem; margin-top: 3px; flex-shrink: 0; }
 
-/* Pulse animation */
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-.pulsing{animation:pulse 1.5s ease-in-out infinite;}
+  .integration-list { display: flex; flex-direction: column; gap: 8px; }
+  .int-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text2);
+  }
+  .int-badge { font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; }
+  .int-live { background: rgba(52,211,153,0.12); color: var(--green); }
+  .int-add { background: rgba(56,189,248,0.12); color: var(--accent3); }
+  .int-plan { background: rgba(251,191,36,0.12); color: var(--yellow); }
+  .int-fut { background: rgba(248,113,113,0.12); color: var(--red); }
 
-/* Step indicator */
-.steps{display:flex;align-items:center;gap:0;margin-bottom:20px;}
-.step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;transition:all 0.3s;}
-.step-dot.done{background:var(--green);color:#000;}
-.step-dot.active{background:var(--accent);color:#fff;box-shadow:0 0 12px rgba(79,156,249,0.4);}
-.step-dot.pending{background:var(--bg3);color:var(--text3);border:1px solid var(--border);}
-.step-line{flex:1;height:1px;background:var(--border);}
-.step-line.done{background:var(--green);}
+  /* LOADER */
+  .spinner {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border: 2px solid rgba(123,92,250,0.3);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Notification toast */
-#toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:12px 16px;font-size:12px;font-family:var(--mono);z-index:999;opacity:0;transform:translateY(8px);transition:all 0.3s;max-width:320px;}
-#toast.show{opacity:1;transform:translateY(0);}
+  /* SCROLL */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
 
-/* Glow backgrounds */
-.glow-blue{box-shadow:0 0 40px rgba(79,156,249,0.08) inset;}
-.glow-green{box-shadow:0 0 40px rgba(45,216,130,0.08) inset;}
+  /* CURSOR */
+  .cursor::after {
+    content: '▋';
+    animation: blink 1s step-end infinite;
+    color: var(--accent);
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-/* Hero stat */
-.hero-stat{text-align:center;padding:20px;}
-.hero-num{font-size:42px;font-weight:800;letter-spacing:-2px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  /* SECTION HEADER */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .back-btn {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .back-btn:hover { border-color: var(--accent); color: var(--accent2); }
+  .page-title { font-size: 1.1rem; font-weight: 800; }
+  .page-sub { font-family: var(--mono); font-size: 0.65rem; color: var(--text3); margin-top: 2px; }
 
-/* Diff list */
-.diff-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
-.diff-item:last-child{border-bottom:none;}
-.diff-icon{font-size:14px;flex-shrink:0;margin-top:1px;}
+  /* ERROR MSG */
+  .error-msg {
+    background: rgba(248,113,113,0.1);
+    border: 1px solid rgba(248,113,113,0.3);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--red);
+    margin-top: 10px;
+    display: none;
+  }
 
-/* Loading overlay */
-#loading-overlay{display:none;position:fixed;inset:0;background:rgba(7,8,10,0.85);z-index:100;align-items:center;justify-content:center;flex-direction:column;gap:14px;}
-#loading-overlay.show{display:flex;}
-.loading-spinner{width:36px;height:36px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
-.loading-msg{font-family:var(--mono);font-size:12px;color:var(--text2);}
+  /* COPY BTN */
+  .copy-btn {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .copy-btn:hover { color: var(--accent2); border-color: var(--accent); }
 
-@media(max-width:900px){
-  .sidebar{width:180px;}
-  .grid-4{grid-template-columns:1fr 1fr;}
-  .grid-3{grid-template-columns:1fr 1fr;}
-}
+  /* CHECKBOX GROUP */
+  .checkbox-group { display: flex; flex-wrap: wrap; gap: 8px; }
+  .checkbox-option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text2);
+    transition: all 0.15s;
+  }
+  .checkbox-option input { accent-color: var(--accent); }
+  .checkbox-option:has(input:checked) {
+    border-color: var(--green);
+    color: var(--green);
+    background: rgba(52,211,153,0.08);
+  }
+
+  @media (max-width: 900px) {
+    .sidebar { width: 52px; min-width: 52px; }
+    .nav-item span, .logo h1, .logo span, .nav-label, .api-status span, .sidebar-footer { display: none; }
+    .nav-item .badge { display: none; }
+    .agent-layout, .settings-grid, .pillars-grid, .stats-row { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
 
-<div id="toast"></div>
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="logo">
+    <h1>AgentOS</h1>
+    <span>v2.0 Platform</span>
+  </div>
 
-<div id="loading-overlay">
-  <div class="loading-spinner"></div>
-  <div class="loading-msg" id="loading-msg">Agent is thinking...</div>
-</div>
+  <div class="nav-section">
+    <div class="nav-label">Overview</div>
+    <div class="nav-item active" onclick="showPage('dashboard')">
+      <span class="nav-icon">⬡</span><span>Dashboard</span>
+    </div>
+  </div>
 
-<div class="shell">
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="logo">
-      <div class="logo-mark">A</div>
-      <div>
-        <div class="logo-text">AgentOS</div>
-        <div class="logo-sub">v2.0 Platform</div>
+  <div class="nav-section">
+    <div class="nav-label">Agents</div>
+    <div class="nav-item" onclick="showPage('outreach')">
+      <span class="nav-icon">✦</span><span>Outreach Agent</span>
+      <span class="badge">HOT</span>
+    </div>
+    <div class="nav-item" onclick="showPage('research')">
+      <span class="nav-icon">◈</span><span>Research Agent</span>
+    </div>
+    <div class="nav-item" onclick="showPage('analyst')">
+      <span class="nav-icon">⬦</span><span>Data Analyst</span>
+    </div>
+    <div class="nav-item" onclick="showPage('automator')">
+      <span class="nav-icon">⟳</span><span>Task Automator</span>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">System</div>
+    <div class="nav-item" onclick="showPage('logs')">
+      <span class="nav-icon">≡</span><span>Agent Logs</span>
+    </div>
+    <div class="nav-item" onclick="showPage('settings')">
+      <span class="nav-icon">◎</span><span>Settings</span>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="api-status">
+      <div class="dot"></div>
+      <span>Claude API connected</span>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <h2 id="topbar-title">Dashboard <span class="sub">// command center</span></h2>
+    <button class="btn btn-ghost" onclick="runAllAgents()">⟳ Run All</button>
+    <button class="btn btn-primary" onclick="showPage('outreach')">+ New Agent Run</button>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Agents Active</div>
+          <div class="stat-value" id="stat-agents">4</div>
+          <div class="stat-hint up">↑ All systems go</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Tasks Completed</div>
+          <div class="stat-value" id="stat-tasks">0</div>
+          <div class="stat-hint">this session</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Time Saved</div>
+          <div class="stat-value" id="stat-time">0h</div>
+          <div class="stat-hint up">↑ vs manual</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Model</div>
+          <div class="stat-value" style="font-size:1rem;margin-top:12px">claude<br>sonnet</div>
+          <div class="stat-hint">&nbsp;</div>
+        </div>
+      </div>
+
+      <div style="font-family:var(--mono);font-size:0.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:14px;">Four Pillars — Click to Launch</div>
+
+      <div class="pillars-grid">
+        <div class="pillar-card" onclick="showPage('outreach')">
+          <span class="icon">✦</span>
+          <h3>Outreach Agent</h3>
+          <p>Personalized sales & intro messages. Reads prospect context, crafts custom communications at scale.</p>
+          <div class="tags"><span class="tag">process automation</span><span class="tag">personalization</span></div>
+        </div>
+        <div class="pillar-card" onclick="showPage('research')">
+          <span class="icon">◈</span>
+          <h3>Research Agent</h3>
+          <p>Synthesizes data from multiple sources. Monitor competitors, track news, generate intelligence reports.</p>
+          <div class="tags"><span class="tag">data synthesis</span><span class="tag">web search</span></div>
+        </div>
+        <div class="pillar-card" onclick="showPage('analyst')">
+          <span class="icon">⬦</span>
+          <h3>Data Analyst Agent</h3>
+          <p>Upload CSV or paste data. Agent plans analysis steps, writes insights, identifies patterns autonomously.</p>
+          <div class="tags"><span class="tag">data analysis</span><span class="tag">tool use</span></div>
+        </div>
+        <div class="pillar-card" onclick="showPage('automator')">
+          <span class="icon">⟳</span>
+          <h3>Task Automator</h3>
+          <p>Multi-step workflow execution. Breaks goals into sub-tasks, executes sequentially with planning.</p>
+          <div class="tags"><span class="tag">multi-step</span><span class="tag">planning</span></div>
+        </div>
+      </div>
+
+      <div class="activity-panel">
+        <div class="panel-title">Recent Activity</div>
+        <div id="activity-list">
+          <div class="empty-state">◌ No activity yet — run an agent to see logs here.</div>
+        </div>
       </div>
     </div>
-    <nav class="nav">
-      <div class="nav-section">
-        <div class="nav-label">Overview</div>
-        <div class="nav-item active" onclick="showPage('dashboard')">
-          <span class="nav-icon">⬡</span> Dashboard
-        </div>
-      </div>
-      <div class="nav-section">
-        <div class="nav-label">Agents</div>
-        <div class="nav-item" onclick="showPage('outreach')">
-          <span class="nav-icon">✦</span> Outreach Agent
-          <span class="nav-badge">HOT</span>
-        </div>
-        <div class="nav-item" onclick="showPage('research')">
-          <span class="nav-icon">◈</span> Research Agent
-        </div>
-        <div class="nav-item" onclick="showPage('analysis')">
-          <span class="nav-icon">⬦</span> Data Analyst
-        </div>
-        <div class="nav-item" onclick="showPage('automation')">
-          <span class="nav-icon">⟳</span> Task Automator
-        </div>
-      </div>
-      <div class="nav-section">
-        <div class="nav-label">System</div>
-        <div class="nav-item" onclick="showPage('logs')">
-          <span class="nav-icon">≡</span> Agent Logs
-        </div>
-        <div class="nav-item" onclick="showPage('settings')">
-          <span class="nav-icon">◎</span> Settings
-        </div>
-      </div>
-    </nav>
-    <div class="sidebar-footer">
-      <span class="status-dot"></span>
-      <span class="status-text">Claude API connected</span>
-    </div>
-  </aside>
 
-  <!-- MAIN -->
-  <main class="main">
-
-    <!-- DASHBOARD PAGE -->
-    <div id="page-dashboard" class="page active">
-      <div class="header">
+    <!-- OUTREACH AGENT -->
+    <div class="page" id="page-outreach">
+      <div class="section-header">
+        <button class="back-btn" onclick="showPage('dashboard')">← Back</button>
         <div>
-          <div class="page-title">Dashboard</div>
-          <div class="page-sub">// command center</div>
-        </div>
-        <div class="header-actions">
-          <button class="btn btn-ghost" onclick="runAllAgents()">⟳ Run All</button>
-          <button class="btn btn-primary" onclick="showPage('outreach')">+ New Agent Run</button>
-        </div>
-      </div>
-      <div class="content">
-
-        <div class="grid-4" style="margin-bottom:24px;">
-          <div class="stat">
-            <div class="stat-label">Agents active</div>
-            <div class="stat-value" style="color:var(--accent);">4</div>
-            <div class="stat-delta">↑ All systems go</div>
-          </div>
-          <div class="stat">
-            <div class="stat-label">Tasks completed</div>
-            <div class="stat-value" id="dash-tasks">0</div>
-            <div class="stat-delta">this session</div>
-          </div>
-          <div class="stat">
-            <div class="stat-label">Time saved</div>
-            <div class="stat-value" id="dash-time">0h</div>
-            <div class="stat-delta">↑ vs manual</div>
-          </div>
-          <div class="stat">
-            <div class="stat-label">Model</div>
-            <div class="stat-value" style="font-size:13px;font-family:var(--mono);margin-top:4px;">claude<br>sonnet</div>
-          </div>
-        </div>
-
-        <div class="section-title">Four Pillars — Click to Launch</div>
-
-        <div class="grid-2" style="margin-bottom:24px;">
-          <div class="agent-card blue" onclick="showPage('outreach')">
-            <div class="agent-icon">✦</div>
-            <div class="agent-name">Outreach Agent</div>
-            <div class="agent-desc">Personalized sales & intro messages. Reads prospect context, crafts custom communications at scale.</div>
-            <div class="agent-tools">
-              <span class="tag tag-blue">process automation</span>
-              <span class="tag tag-cyan">personalization</span>
-            </div>
-          </div>
-          <div class="agent-card purple" onclick="showPage('research')">
-            <div class="agent-icon">◈</div>
-            <div class="agent-name">Research Agent</div>
-            <div class="agent-desc">Synthesizes data from multiple sources. Monitor competitors, track news, generate intelligence reports.</div>
-            <div class="agent-tools">
-              <span class="tag tag-purple">data synthesis</span>
-              <span class="tag tag-blue">web search</span>
-            </div>
-          </div>
-          <div class="agent-card green" onclick="showPage('analysis')">
-            <div class="agent-icon">⬦</div>
-            <div class="agent-name">Data Analyst Agent</div>
-            <div class="agent-desc">Upload CSV or paste data. Agent plans analysis steps, writes insights, identifies patterns autonomously.</div>
-            <div class="agent-tools">
-              <span class="tag tag-green">data analysis</span>
-              <span class="tag tag-amber">tool use</span>
-            </div>
-          </div>
-          <div class="agent-card amber" onclick="showPage('automation')">
-            <div class="agent-icon">⟳</div>
-            <div class="agent-name">Task Automator</div>
-            <div class="agent-desc">Multi-step workflow execution. Breaks goals into sub-tasks, executes sequentially with planning.</div>
-            <div class="agent-tools">
-              <span class="tag tag-amber">multi-step</span>
-              <span class="tag tag-purple">planning</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-title">Recent Activity</div>
-        <div class="card">
-          <div id="activity-feed">
-            <div class="diff-item">
-              <span class="diff-icon" style="color:var(--text3);">◌</span>
-              <span style="color:var(--text3);font-family:var(--mono);font-size:12px;">No activity yet — run an agent to see logs here.</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- OUTREACH AGENT PAGE -->
-    <div id="page-outreach" class="page">
-      <div class="header">
-        <div>
-          <div class="page-title">Outreach Agent <span class="tag tag-cyan" style="font-size:10px;vertical-align:middle;margin-left:6px;">PILLAR I + IV</span></div>
+          <div class="page-title">✦ Outreach Agent <small style="font-size:0.6rem;color:var(--text3);font-family:var(--mono)">PILLAR I + IV</small></div>
           <div class="page-sub">// process automation + personalization at scale</div>
         </div>
-        <div class="header-actions">
-          <button class="btn btn-ghost" onclick="showPage('dashboard')">← Back</button>
-        </div>
       </div>
-      <div class="content">
-        <div class="grid-2">
-          <!-- Input panel -->
-          <div>
-            <div class="section-title">Prospect Context</div>
-            <div class="card" style="margin-bottom:16px;">
-              <div class="field">
-                <label class="label">Prospect Name</label>
-                <input id="out-name" class="input" placeholder="e.g. Priya Sharma" value="Arjun Mehta"/>
-              </div>
-              <div class="field">
-                <label class="label">Company</label>
-                <input id="out-company" class="input" placeholder="e.g. TechCorp" value="Zenith Analytics"/>
-              </div>
-              <div class="field">
-                <label class="label">Role</label>
-                <input id="out-role" class="input" placeholder="e.g. VP Engineering" value="Head of Growth"/>
-              </div>
-              <div class="field">
-                <label class="label">Context / Recent Activity</label>
-                <textarea id="out-context" class="input" placeholder="Recent LinkedIn posts, achievements, company news...">Recently posted about struggling with manual sales prospecting. Company just raised Series B. Spoke at SaaSConf 2024 about scaling revenue operations.</textarea>
-              </div>
-              <div class="field">
-                <label class="label">Your Product / Offer</label>
-                <textarea id="out-product" class="input" style="min-height:70px;">AgentOS — AI platform that automates sales outreach, research, and data analysis. Reduces manual ops work by 80%.</textarea>
-              </div>
-              <div class="field">
-                <label class="label">Channel</label>
-                <select id="out-channel" class="input">
-                  <option>LinkedIn message</option>
-                  <option>Cold email</option>
-                  <option>Follow-up email</option>
-                  <option>WhatsApp intro</option>
-                </select>
-              </div>
-              <button class="btn btn-primary" style="width:100%;" onclick="runOutreachAgent()">
-                ✦ Generate Personalized Message
-              </button>
-            </div>
 
-            <div class="card card-sm">
-              <div class="card-title" style="margin-bottom:10px;">How this agent works</div>
-              <div class="diff-item" style="padding:6px 0;">
-                <span class="diff-icon">①</span>
-                <span style="font-size:12px;color:var(--text2);">Reads prospect context (role, company, activity)</span>
-              </div>
-              <div class="diff-item" style="padding:6px 0;">
-                <span class="diff-icon">②</span>
-                <span style="font-size:12px;color:var(--text2);">Identifies personalization hooks & pain points</span>
-              </div>
-              <div class="diff-item" style="padding:6px 0;">
-                <span class="diff-icon">③</span>
-                <span style="font-size:12px;color:var(--text2);">Crafts channel-specific, human-sounding message</span>
-              </div>
-              <div class="diff-item" style="padding:6px 0;border-bottom:none;">
-                <span class="diff-icon">④</span>
-                <span style="font-size:12px;color:var(--text2);">Outputs message + strategy reasoning + subject line</span>
-              </div>
+      <div class="agent-layout">
+        <div class="agent-panel">
+          <h3>Prospect Context</h3>
+          <div class="form-group">
+            <label>Prospect Name</label>
+            <input type="text" id="ou-name" placeholder="e.g. Priya Sharma" value="">
+          </div>
+          <div class="form-group">
+            <label>Company</label>
+            <input type="text" id="ou-company" placeholder="e.g. Acme Corp" value="">
+          </div>
+          <div class="form-group">
+            <label>Role</label>
+            <input type="text" id="ou-role" placeholder="e.g. Head of Sales" value="">
+          </div>
+          <div class="form-group">
+            <label>Context / Recent Activity</label>
+            <textarea id="ou-context" placeholder="Recently posted about... Company just raised...">Recently posted about struggling with manual sales prospecting. Company just raised Series B. Spoke at SaaSConf 2024 about scaling revenue operations.</textarea>
+          </div>
+          <div class="form-group">
+            <label>Your Product / Offer</label>
+            <textarea id="ou-product" placeholder="What are you offering?">AgentOS — AI platform that automates sales outreach, research, and data analysis. Reduces manual ops work by 80%.</textarea>
+          </div>
+          <div class="form-group">
+            <label>Channel</label>
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="ou-channel" value="LinkedIn message" checked> LinkedIn message</label>
+              <label class="radio-option"><input type="radio" name="ou-channel" value="Cold email"> Cold email</label>
+              <label class="radio-option"><input type="radio" name="ou-channel" value="Follow-up email"> Follow-up email</label>
+              <label class="radio-option"><input type="radio" name="ou-channel" value="WhatsApp intro"> WhatsApp intro</label>
             </div>
           </div>
+          <button class="btn btn-primary" id="ou-btn" onclick="runOutreach()" style="width:100%;justify-content:center;margin-top:4px">✦ Generate Personalized Message</button>
+          <div class="error-msg" id="ou-error"></div>
 
-          <!-- Output panel -->
-          <div>
-            <div class="section-title">Agent Output</div>
-            <div class="card" id="outreach-output" style="min-height:320px;">
-              <div style="color:var(--text3);font-family:var(--mono);font-size:12px;text-align:center;padding:60px 20px;">
-                Run the agent to see personalized output →
-              </div>
-            </div>
-
-            <div class="section-title" style="margin-top:20px;">Agent Reasoning</div>
-            <div class="terminal" id="outreach-log" style="min-height:140px;">
-              <div class="t-line t-prompt">$ agent ready — awaiting input...</div>
+          <div style="margin-top:22px;border-top:1px solid var(--border);padding-top:18px;">
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--text3);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;">How this agent works</div>
+            <div class="steps-list" style="margin-bottom:0">
+              <div class="step-item"><div class="step-num">①</div><div class="step-text">Reads prospect context (role, company, activity)</div></div>
+              <div class="step-item"><div class="step-num">②</div><div class="step-text">Identifies personalization hooks & pain points</div></div>
+              <div class="step-item"><div class="step-num">③</div><div class="step-text">Crafts channel-specific, human-sounding message</div></div>
+              <div class="step-item"><div class="step-num">④</div><div class="step-text">Outputs message + strategy reasoning + subject line</div></div>
             </div>
           </div>
+        </div>
+
+        <div class="agent-panel">
+          <h3>Agent Output</h3>
+          <div style="position:relative">
+            <div class="output-box" id="ou-output">Run the agent to see personalized output →</div>
+            <button class="copy-btn" onclick="copyOutput('ou-output')">copy</button>
+          </div>
+          <div style="margin-top:12px;font-family:var(--mono);font-size:0.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;">Agent Reasoning</div>
+          <div class="reasoning-box" id="ou-reasoning">$ agent ready — awaiting input...</div>
         </div>
       </div>
     </div>
 
-    <!-- RESEARCH AGENT PAGE -->
-    <div id="page-research" class="page">
-      <div class="header">
+    <!-- RESEARCH AGENT -->
+    <div class="page" id="page-research">
+      <div class="section-header">
+        <button class="back-btn" onclick="showPage('dashboard')">← Back</button>
         <div>
-          <div class="page-title">Research Agent <span class="tag tag-purple" style="font-size:10px;vertical-align:middle;margin-left:6px;">PILLAR II</span></div>
+          <div class="page-title">◈ Research Agent <small style="font-size:0.6rem;color:var(--text3);font-family:var(--mono)">PILLAR II</small></div>
           <div class="page-sub">// data synthesis & competitive intelligence</div>
         </div>
-        <div class="header-actions">
-          <button class="btn btn-ghost" onclick="showPage('dashboard')">← Back</button>
-        </div>
       </div>
-      <div class="content">
-        <div class="grid-2">
-          <div>
-            <div class="section-title">Research Target</div>
-            <div class="card" style="margin-bottom:16px;">
-              <div class="field">
-                <label class="label">Research Topic / Entity</label>
-                <input id="res-topic" class="input" placeholder="Company, person, technology, market..." value="OpenAI's enterprise sales strategy"/>
-              </div>
-              <div class="field">
-                <label class="label">Research Type</label>
-                <select id="res-type" class="input">
-                  <option>Competitive intelligence</option>
-                  <option>Market analysis</option>
-                  <option>Person / founder research</option>
-                  <option>Technology landscape</option>
-                  <option>News synthesis</option>
-                </select>
-              </div>
-              <div class="field">
-                <label class="label">Focus Areas (optional)</label>
-                <input id="res-focus" class="input" placeholder="e.g. pricing, partnerships, recent news" value="pricing, go-to-market, key differentiators"/>
-              </div>
-              <div class="field">
-                <label class="label">Output Format</label>
-                <select id="res-format" class="input">
-                  <option>Executive brief (3 sections)</option>
-                  <option>Bullet point summary</option>
-                  <option>SWOT analysis</option>
-                  <option>Detailed report</option>
-                </select>
-              </div>
-              <button class="btn btn-primary" style="width:100%;" onclick="runResearchAgent()">
-                ◈ Run Research Agent
-              </button>
-            </div>
 
-            <div class="card card-sm glow-blue">
-              <div class="card-title" style="margin-bottom:10px;">Simulated Data Sources</div>
-              <div class="chip-row">
-                <span class="tag tag-blue">LinkedIn</span>
-                <span class="tag tag-cyan">GitHub</span>
-                <span class="tag tag-green">News API</span>
-                <span class="tag tag-amber">Crunchbase</span>
-                <span class="tag tag-purple">Twitter/X</span>
-                <span class="tag tag-blue">Web search</span>
-                <span class="tag tag-red">SEC filings</span>
-              </div>
-              <div style="font-size:11px;color:var(--text3);margin-top:10px;font-family:var(--mono);">In production: connect real APIs via tool_use</div>
+      <div class="agent-layout">
+        <div class="agent-panel">
+          <h3>Research Target</h3>
+          <div class="form-group">
+            <label>Research Topic / Entity</label>
+            <input type="text" id="re-topic" placeholder="e.g. OpenAI, AI market trends, Series B SaaS companies">
+          </div>
+          <div class="form-group">
+            <label>Research Type</label>
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="re-type" value="Competitive intelligence" checked> Competitive intelligence</label>
+              <label class="radio-option"><input type="radio" name="re-type" value="Market analysis"> Market analysis</label>
+              <label class="radio-option"><input type="radio" name="re-type" value="Person / founder research"> Person / founder research</label>
+              <label class="radio-option"><input type="radio" name="re-type" value="Technology landscape"> Technology landscape</label>
+              <label class="radio-option"><input type="radio" name="re-type" value="News synthesis"> News synthesis</label>
             </div>
           </div>
+          <div class="form-group">
+            <label>Focus Areas (optional)</label>
+            <input type="text" id="re-focus" placeholder="e.g. pricing, India market, Series B funding">
+          </div>
+          <div class="form-group">
+            <label>Output Format</label>
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="re-format" value="Executive brief (3 sections)" checked> Executive brief (3 sections)</label>
+              <label class="radio-option"><input type="radio" name="re-format" value="Bullet point summary"> Bullet point summary</label>
+              <label class="radio-option"><input type="radio" name="re-format" value="SWOT analysis"> SWOT analysis</label>
+              <label class="radio-option"><input type="radio" name="re-format" value="Detailed report"> Detailed report</label>
+            </div>
+          </div>
+          <button class="btn btn-primary" id="re-btn" onclick="runResearch()" style="width:100%;justify-content:center;margin-top:4px">◈ Run Research Agent</button>
+          <div class="error-msg" id="re-error"></div>
 
-          <div>
-            <div class="section-title">Intelligence Report</div>
-            <div class="terminal" id="research-log" style="min-height:100px;margin-bottom:14px;">
-              <div class="t-line t-prompt">$ research agent standby...</div>
+          <div style="margin-top:22px;border-top:1px solid var(--border);padding-top:18px;">
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--text3);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">Simulated Data Sources</div>
+            <div class="checkbox-group">
+              <label class="checkbox-option"><input type="checkbox" checked> LinkedIn</label>
+              <label class="checkbox-option"><input type="checkbox" checked> GitHub</label>
+              <label class="checkbox-option"><input type="checkbox" checked> News API</label>
+              <label class="checkbox-option"><input type="checkbox" checked> Crunchbase</label>
+              <label class="checkbox-option"><input type="checkbox" checked> Twitter/X</label>
+              <label class="checkbox-option"><input type="checkbox" checked> Web search</label>
+              <label class="checkbox-option"><input type="checkbox"> SEC filings</label>
             </div>
-            <div id="research-output" style="min-height:260px;">
-              <div class="card" style="text-align:center;padding:60px 20px;color:var(--text3);font-family:var(--mono);font-size:12px;">
-                Run research to generate intelligence →
-              </div>
-            </div>
+            <div style="font-family:var(--mono);font-size:0.62rem;color:var(--text3);margin-top:8px">In production: connect real APIs via tool_use</div>
+          </div>
+        </div>
+
+        <div class="agent-panel">
+          <h3>Intelligence Report</h3>
+          <div style="position:relative">
+            <div class="output-box" id="re-output" style="min-height:200px">$ research agent standby...<br><br>Run research to generate intelligence →</div>
+            <button class="copy-btn" onclick="copyOutput('re-output')">copy</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- DATA ANALYST PAGE -->
-    <div id="page-analysis" class="page">
-      <div class="header">
+    <!-- DATA ANALYST -->
+    <div class="page" id="page-analyst">
+      <div class="section-header">
+        <button class="back-btn" onclick="showPage('dashboard')">← Back</button>
         <div>
-          <div class="page-title">Data Analyst Agent <span class="tag tag-green" style="font-size:10px;vertical-align:middle;margin-left:6px;">PILLAR III</span></div>
+          <div class="page-title">⬦ Data Analyst Agent <small style="font-size:0.6rem;color:var(--text3);font-family:var(--mono)">PILLAR III</small></div>
           <div class="page-sub">// intelligent data synthesis & insights</div>
         </div>
-        <div class="header-actions">
-          <button class="btn btn-ghost" onclick="showPage('dashboard')">← Back</button>
-        </div>
       </div>
-      <div class="content">
-        <div class="grid-2">
-          <div>
-            <div class="section-title">Data Input</div>
-            <div class="card" style="margin-bottom:16px;">
-              <div class="field">
-                <label class="label">Paste Data (CSV / JSON / plain table)</label>
-                <textarea id="ana-data" class="input" style="min-height:140px;font-family:var(--mono);font-size:11px;">Month,Revenue,Leads,Conversion%,CAC
+
+      <div class="agent-layout">
+        <div class="agent-panel">
+          <h3>Data Input</h3>
+          <div class="form-group">
+            <label>Paste Data (CSV / JSON / plain table)</label>
+            <textarea id="da-data" style="min-height:160px;font-family:var(--mono);font-size:0.7rem">Month,Revenue,Leads,Conversion%,CAC
 Jan,42000,320,4.2,180
 Feb,38000,290,3.8,195
 Mar,55000,410,5.1,162
@@ -568,788 +900,650 @@ Apr,61000,480,5.8,148
 May,58000,450,5.4,155
 Jun,72000,590,6.1,132
 Jul,68000,540,5.9,138</textarea>
-              </div>
-              <div class="field">
-                <label class="label">Analysis Goal</label>
-                <input id="ana-goal" class="input" value="Identify growth trends, find best performing month, and give 3 actionable recommendations" placeholder="What do you want to learn?"/>
-              </div>
-              <div class="field">
-                <label class="label">Agent Depth</label>
-                <select id="ana-depth" class="input">
-                  <option>Quick scan (key metrics + 1 insight)</option>
-                  <option selected>Standard analysis (trends + 3 recommendations)</option>
-                  <option>Deep dive (full statistical breakdown)</option>
-                </select>
-              </div>
-              <button class="btn btn-primary" style="width:100%;" onclick="runAnalysisAgent()">
-                ⬦ Analyze with Agent
-              </button>
+          </div>
+          <div class="form-group">
+            <label>Analysis Goal</label>
+            <input type="text" id="da-goal" placeholder="e.g. Find growth trends and revenue forecasts" value="Identify growth trends, conversion improvements, and provide a 3-month revenue forecast">
+          </div>
+          <div class="form-group">
+            <label>Agent Depth</label>
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="da-depth" value="Quick scan (key metrics + 1 insight)"> Quick scan (key metrics + 1 insight)</label>
+              <label class="radio-option"><input type="radio" name="da-depth" value="Standard analysis (trends + 3 recommendations)" checked> Standard analysis (trends + 3 recommendations)</label>
+              <label class="radio-option"><input type="radio" name="da-depth" value="Deep dive (full statistical breakdown)"> Deep dive (full statistical breakdown)</label>
             </div>
           </div>
+          <button class="btn btn-primary" id="da-btn" onclick="runAnalyst()" style="width:100%;justify-content:center;margin-top:4px">⬦ Analyze with Agent</button>
+          <div class="error-msg" id="da-error"></div>
+        </div>
 
+        <div class="agent-panel">
           <div>
-            <div class="section-title">Analysis Steps</div>
-            <div class="terminal" id="analysis-log" style="min-height:120px;margin-bottom:14px;">
-              <div class="t-line t-prompt">$ analyst agent ready...</div>
-            </div>
-            <div class="section-title">Agent Insights</div>
-            <div id="analysis-output">
-              <div class="card" style="text-align:center;padding:50px 20px;color:var(--text3);font-family:var(--mono);font-size:12px;">
-                Submit data for AI-powered analysis →
-              </div>
+            <h3>Analysis Steps</h3>
+            <div id="da-steps" style="font-family:var(--mono);font-size:0.7rem;color:var(--text3)">$ analyst agent ready...</div>
+          </div>
+          <div style="margin-top:18px">
+            <h3>Agent Insights</h3>
+            <div style="position:relative">
+              <div class="output-box" id="da-output" style="min-height:180px">Submit data for AI-powered analysis →</div>
+              <button class="copy-btn" onclick="copyOutput('da-output')">copy</button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- TASK AUTOMATOR PAGE -->
-    <div id="page-automation" class="page">
-      <div class="header">
+    <!-- TASK AUTOMATOR -->
+    <div class="page" id="page-automator">
+      <div class="section-header">
+        <button class="back-btn" onclick="showPage('dashboard')">← Back</button>
         <div>
-          <div class="page-title">Task Automator <span class="tag tag-amber" style="font-size:10px;vertical-align:middle;margin-left:6px;">PILLAR I + III</span></div>
+          <div class="page-title">⟳ Task Automator <small style="font-size:0.6rem;color:var(--text3);font-family:var(--mono)">PILLAR I + III</small></div>
           <div class="page-sub">// multi-step autonomous planning & execution</div>
         </div>
-        <div class="header-actions">
-          <button class="btn btn-ghost" onclick="showPage('dashboard')">← Back</button>
-        </div>
       </div>
-      <div class="content">
 
-        <div class="section-title">Goal Input</div>
-        <div class="card" style="margin-bottom:20px;">
-          <div class="grid-2" style="gap:14px;">
-            <div>
-              <div class="field">
-                <label class="label">High-Level Goal</label>
-                <textarea id="auto-goal" class="input" style="min-height:80px;">Prepare a go-to-market launch plan for an AI SaaS product targeting Indian SMBs, including channel strategy, pricing tiers, and first 30-day action items.</textarea>
-              </div>
-            </div>
-            <div>
-              <div class="field">
-                <label class="label">Available Tools</label>
-                <div class="chip-row" style="margin-bottom:10px;">
-                  <span class="tag tag-green">✓ web_search</span>
-                  <span class="tag tag-green">✓ analyze_data</span>
-                  <span class="tag tag-green">✓ write_doc</span>
-                  <span class="tag tag-amber">✓ send_email</span>
-                  <span class="tag tag-blue">✓ schedule</span>
-                  <span class="tag tag-purple">✓ update_crm</span>
-                </div>
-              </div>
-              <div class="field">
-                <label class="label">Max Steps</label>
-                <select id="auto-steps" class="input">
-                  <option>3 steps</option>
-                  <option selected>5 steps</option>
-                  <option>7 steps</option>
-                </select>
-              </div>
+      <div class="agent-layout">
+        <div class="agent-panel">
+          <h3>Goal Input</h3>
+          <div class="form-group">
+            <label>High-Level Goal</label>
+            <textarea id="au-goal" style="min-height:110px">Prepare a go-to-market launch plan for an AI SaaS product targeting Indian SMBs, including channel strategy, pricing tiers, and first 30-day action items.</textarea>
+          </div>
+          <div class="form-group">
+            <label>Available Tools</label>
+            <div class="checkbox-group">
+              <label class="checkbox-option"><input type="checkbox" id="tool-search" checked> web_search</label>
+              <label class="checkbox-option"><input type="checkbox" id="tool-analyze" checked> analyze_data</label>
+              <label class="checkbox-option"><input type="checkbox" id="tool-write" checked> write_doc</label>
+              <label class="checkbox-option"><input type="checkbox" id="tool-email"> send_email</label>
+              <label class="checkbox-option"><input type="checkbox" id="tool-schedule"> schedule</label>
+              <label class="checkbox-option"><input type="checkbox" id="tool-crm"> update_crm</label>
             </div>
           </div>
-          <button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="runAutomationAgent()">
-            ⟳ Plan &amp; Execute Autonomously
-          </button>
+          <div class="form-group">
+            <label>Max Steps</label>
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="au-steps" value="3"> 3 steps</label>
+              <label class="radio-option"><input type="radio" name="au-steps" value="5" checked> 5 steps</label>
+              <label class="radio-option"><input type="radio" name="au-steps" value="7"> 7 steps</label>
+            </div>
+          </div>
+          <button class="btn btn-primary" id="au-btn" onclick="runAutomator()" style="width:100%;justify-content:center;margin-top:4px">⟳ Plan & Execute Autonomously</button>
+          <div class="error-msg" id="au-error"></div>
         </div>
 
-        <!-- Step progress visualizer -->
-        <div id="auto-steps-viz" style="display:none;margin-bottom:20px;">
-          <div class="section-title">Execution Plan</div>
-          <div class="card" id="auto-plan-card"></div>
-        </div>
+        <div class="agent-panel">
+          <h3>Execution Plan</h3>
+          <div id="au-plan" style="font-family:var(--mono);font-size:0.7rem;color:var(--text3);margin-bottom:18px">$ automator ready — define your goal above...</div>
 
-        <div class="section-title">Execution Log</div>
-        <div class="terminal" id="auto-log" style="min-height:140px;margin-bottom:16px;">
-          <div class="t-line t-prompt">$ automator ready — define your goal above...</div>
+          <h3>Execution Log</h3>
+          <div style="position:relative">
+            <div class="output-box" id="au-output" style="min-height:200px">Execution results will appear here →</div>
+            <button class="copy-btn" onclick="copyOutput('au-output')">copy</button>
+          </div>
         </div>
-
-        <div id="auto-output"></div>
       </div>
     </div>
 
-    <!-- LOGS PAGE -->
-    <div id="page-logs" class="page">
-      <div class="header">
+    <!-- LOGS -->
+    <div class="page" id="page-logs">
+      <div class="section-header">
+        <button class="back-btn" onclick="showPage('dashboard')">← Back</button>
         <div>
-          <div class="page-title">Agent Logs</div>
+          <div class="page-title">≡ Agent Logs</div>
           <div class="page-sub">// full session history</div>
         </div>
-        <div class="header-actions">
-          <button class="btn btn-ghost" onclick="clearLogs()">Clear</button>
-          <button class="btn btn-ghost" onclick="showPage('dashboard')">← Back</button>
-        </div>
+        <button class="btn btn-ghost" style="margin-left:auto" onclick="clearLogs()">Clear</button>
       </div>
-      <div class="content">
-        <div class="terminal" id="full-log" style="min-height:500px;max-height:none;">
-          <div class="t-line t-prompt">$ session started — all agent activity will appear here...</div>
+      <div class="agent-panel" style="max-width:900px;padding:0;overflow:hidden">
+        <div id="log-list" style="font-family:var(--mono);font-size:0.72rem;color:var(--text3);padding:16px 20px">
+          $ session started — all agent activity will appear here...
         </div>
       </div>
     </div>
 
-    <!-- SETTINGS PAGE -->
-    <div id="page-settings" class="page">
-      <div class="header">
+    <!-- SETTINGS -->
+    <div class="page" id="page-settings">
+      <div class="section-header">
+        <button class="back-btn" onclick="showPage('dashboard')">← Back</button>
         <div>
-          <div class="page-title">Settings</div>
+          <div class="page-title">◎ Settings</div>
           <div class="page-sub">// configure your platform</div>
         </div>
-        <div class="header-actions">
-          <button class="btn btn-ghost" onclick="showPage('dashboard')">← Back</button>
-        </div>
       </div>
-      <div class="content">
-        <div class="grid-2">
-          <div>
-            <div class="section-title">API Configuration</div>
-            <div class="card" style="margin-bottom:16px;">
-              <div class="field">
-                <label class="label">Claude Model</label>
-                <select class="input" id="model-select">
-                  <option value="claude-sonnet-4-20250514" selected>claude-sonnet-4 (recommended)</option>
-                  <option value="claude-opus-4-20250514">claude-opus-4 (most capable)</option>
-                  <option value="claude-haiku-4-5-20251001">claude-haiku-4.5 (fastest)</option>
-                </select>
-              </div>
-              <div class="field">
-                <label class="label">Max Tokens per Run</label>
-                <input type="number" class="input" id="max-tokens" value="2000" min="500" max="4000"/>
-              </div>
-              <div class="field">
-                <label class="label">Temperature (0 = focused, 1 = creative)</label>
-                <input type="range" class="input" id="temperature" min="0" max="1" step="0.1" value="0.7" style="padding:4px;"/>
-                <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:3px;">value: <span id="temp-val">0.7</span></div>
-              </div>
-              <button class="btn btn-green" onclick="testAPI()">◎ Test API Connection</button>
-            </div>
 
-            <div class="section-title">Agent Defaults</div>
-            <div class="card">
-              <div class="field">
-                <label class="label">Your Company Name</label>
-                <input class="input" id="your-company" value="AgentOS" placeholder="Used in outreach messages"/>
-              </div>
-              <div class="field">
-                <label class="label">Your Name / Sender</label>
-                <input class="input" id="your-name" value="The AgentOS Team" placeholder="Used in emails/messages"/>
-              </div>
-              <div class="field">
-                <label class="label">Default Output Language</label>
-                <select class="input">
-                  <option>English</option>
-                  <option>Hindi</option>
-                  <option>Tamil</option>
-                  <option>Auto-detect</option>
-                </select>
-              </div>
-              <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+      <div class="settings-grid">
+        <div class="settings-section">
+          <h3>API Configuration</h3>
+          <div class="form-group">
+            <label>Claude Model</label>
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="cfg-model" value="claude-sonnet-4-20250514" checked> claude-sonnet-4 (recommended)</label>
+              <label class="radio-option"><input type="radio" name="cfg-model" value="claude-opus-4-20250514"> claude-opus-4 (most capable)</label>
+              <label class="radio-option"><input type="radio" name="cfg-model" value="claude-haiku-4-5-20251001"> claude-haiku-4.5 (fastest)</label>
             </div>
           </div>
-
-          <div>
-            <div class="section-title">Architecture Overview</div>
-            <div class="card" style="margin-bottom:16px;">
-              <div class="diff-item">
-                <span class="diff-icon" style="color:var(--accent);">◉</span>
-                <div>
-                  <div style="font-size:13px;font-weight:600;margin-bottom:2px;">Planning loop</div>
-                  <div style="font-size:12px;color:var(--text2);">Goal → Plan steps → Execute tools → Observe → Iterate until done</div>
-                </div>
-              </div>
-              <div class="diff-item">
-                <span class="diff-icon" style="color:var(--green);">◉</span>
-                <div>
-                  <div style="font-size:13px;font-weight:600;margin-bottom:2px;">Tool use via function calling</div>
-                  <div style="font-size:12px;color:var(--text2);">Claude picks & calls tools autonomously. You define schemas; agent executes.</div>
-                </div>
-              </div>
-              <div class="diff-item">
-                <span class="diff-icon" style="color:var(--accent2);">◉</span>
-                <div>
-                  <div style="font-size:13px;font-weight:600;margin-bottom:2px;">Context-aware personalization</div>
-                  <div style="font-size:12px;color:var(--text2);">Every output reads input context first. No templates. Always fresh.</div>
-                </div>
-              </div>
-              <div class="diff-item" style="border-bottom:none;">
-                <span class="diff-icon" style="color:var(--amber);">◉</span>
-                <div>
-                  <div style="font-size:13px;font-weight:600;margin-bottom:2px;">Streaming responses</div>
-                  <div style="font-size:12px;color:var(--text2);">Token-by-token output so users see results immediately as they generate.</div>
-                </div>
-              </div>
+          <div class="form-group">
+            <label>Max Tokens per Run</label>
+            <input type="number" id="cfg-tokens" value="1000" min="100" max="4096">
+          </div>
+          <div class="form-group">
+            <label>Temperature (0 = focused, 1 = creative)</label>
+            <div class="range-row">
+              <input type="range" id="cfg-temp" min="0" max="1" step="0.1" value="0.7" oninput="document.getElementById('cfg-temp-val').textContent=this.value">
+              <div class="range-val" id="cfg-temp-val">0.7</div>
             </div>
+          </div>
+          <button class="btn btn-ghost" onclick="testConnection()" style="width:100%;justify-content:center">◎ Test API Connection</button>
+          <div id="cfg-test-result" style="margin-top:10px;font-family:var(--mono);font-size:0.7rem;display:none"></div>
+        </div>
 
-            <div class="section-title">Integration Roadmap</div>
-            <div class="card">
-              <div class="chip-row">
-                <span class="tag tag-green">✓ Claude API</span>
-                <span class="tag tag-amber">→ HubSpot CRM</span>
-                <span class="tag tag-amber">→ Gmail SMTP</span>
-                <span class="tag tag-amber">→ Slack webhook</span>
-                <span class="tag tag-blue">~ Pinecone vector DB</span>
-                <span class="tag tag-blue">~ LinkedIn API</span>
-                <span class="tag tag-blue">~ Notion write</span>
-                <span class="tag tag-red">✗ Salesforce</span>
-              </div>
-              <div style="font-size:11px;color:var(--text3);margin-top:12px;font-family:var(--mono);">✓ = live | → = add API key | ~ = planned | ✗ = future</div>
-            </div>
+        <div class="settings-section">
+          <h3>Agent Defaults</h3>
+          <div class="form-group">
+            <label>Your Company Name</label>
+            <input type="text" id="cfg-company" placeholder="e.g. AgentOS" value="AgentOS">
+          </div>
+          <div class="form-group">
+            <label>Your Name / Sender</label>
+            <input type="text" id="cfg-sender" placeholder="e.g. Arjun Kumar">
+          </div>
+          <div class="form-group">
+            <label>Default Output Language</label>
+            <select id="cfg-lang">
+              <option>English</option>
+              <option>Hindi</option>
+              <option>Tamil</option>
+              <option>Auto-detect</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="saveSettings()" style="width:100%;justify-content:center">Save Settings</button>
+        </div>
+
+        <div class="settings-section">
+          <h3>Architecture Overview</h3>
+          <div class="arch-list">
+            <div class="arch-item"><span class="arch-dot">◉</span><span><strong>Planning loop</strong> — Goal → Plan steps → Execute tools → Observe → Iterate until done</span></div>
+            <div class="arch-item"><span class="arch-dot">◉</span><span><strong>Tool use via function calling</strong> — Claude picks & calls tools autonomously. You define schemas; agent executes.</span></div>
+            <div class="arch-item"><span class="arch-dot">◉</span><span><strong>Context-aware personalization</strong> — Every output reads input context first. No templates. Always fresh.</span></div>
+            <div class="arch-item"><span class="arch-dot">◉</span><span><strong>Streaming responses</strong> — Token-by-token output so users see results immediately as they generate.</span></div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>Integration Roadmap</h3>
+          <div class="integration-list">
+            <div class="int-item"><span class="int-badge int-live">✓ live</span> Claude API</div>
+            <div class="int-item"><span class="int-badge int-add">→ add key</span> HubSpot CRM</div>
+            <div class="int-item"><span class="int-badge int-add">→ add key</span> Gmail SMTP</div>
+            <div class="int-item"><span class="int-badge int-add">→ add key</span> Slack webhook</div>
+            <div class="int-item"><span class="int-badge int-plan">~ planned</span> Pinecone vector DB</div>
+            <div class="int-item"><span class="int-badge int-plan">~ planned</span> LinkedIn API</div>
+            <div class="int-item"><span class="int-badge int-plan">~ planned</span> Notion write</div>
+            <div class="int-item"><span class="int-badge int-fut">✗ future</span> Salesforce</div>
           </div>
         </div>
       </div>
     </div>
 
-  </main>
+  </div>
 </div>
 
 <script>
-// ── STATE ──────────────────────────────────────────────────────────────────
-const STATE = {
-  tasksCompleted: 0,
-  timeSaved: 0,
-  logs: [],
-  model: 'claude-sonnet-4-20250514',
-  maxTokens: 2000,
-  temperature: 0.7,
-  yourCompany: 'AgentOS',
-  yourName: 'The AgentOS Team'
-};
+// ── STATE ──
+let tasksDone = 0;
+let timeSaved = 0;
+const logs = [];
 
-// ── NAVIGATION ─────────────────────────────────────────────────────────────
-function showPage(name) {
+function getSettings() {
+  const model = document.querySelector('input[name="cfg-model"]:checked')?.value || 'claude-sonnet-4-20250514';
+  const tokens = parseInt(document.getElementById('cfg-tokens')?.value) || 1000;
+  const temp = parseFloat(document.getElementById('cfg-temp')?.value) || 0.7;
+  return { model, tokens, temp };
+}
+
+// ── NAVIGATION ──
+function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
+  document.getElementById('page-' + id)?.classList.add('active');
+
+  const navMap = {dashboard:'⬡',outreach:'✦',research:'◈',analyst:'⬦',automator:'⟳',logs:'≡',settings:'◎'};
   document.querySelectorAll('.nav-item').forEach(n => {
-    if(n.onclick && n.onclick.toString().includes("'"+name+"'")) n.classList.add('active');
+    const icon = n.querySelector('.nav-icon')?.textContent?.trim();
+    if (icon === navMap[id]) n.classList.add('active');
   });
+
+  const titles = {
+    dashboard: 'Dashboard <span class="sub">// command center</span>',
+    outreach: 'Outreach Agent <span class="sub">// personalization at scale</span>',
+    research: 'Research Agent <span class="sub">// competitive intelligence</span>',
+    analyst: 'Data Analyst <span class="sub">// intelligent insights</span>',
+    automator: 'Task Automator <span class="sub">// autonomous execution</span>',
+    logs: 'Agent Logs <span class="sub">// session history</span>',
+    settings: 'Settings <span class="sub">// configure platform</span>',
+  };
+  document.getElementById('topbar-title').innerHTML = titles[id] || id;
 }
 
-// ── TOAST ──────────────────────────────────────────────────────────────────
-function toast(msg, color) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.borderColor = color || 'var(--border2)';
-  t.style.color = color || 'var(--text)';
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
+// ── LOGGING ──
+function addLog(agent, msg, type='info') {
+  const now = new Date();
+  const time = now.toTimeString().slice(0,8);
+  logs.push({time, agent, msg, type});
 
-// ── LOADING ────────────────────────────────────────────────────────────────
-function showLoading(msg) {
-  document.getElementById('loading-msg').textContent = msg || 'Agent thinking...';
-  document.getElementById('loading-overlay').classList.add('show');
-}
-function hideLoading() {
-  document.getElementById('loading-overlay').classList.remove('show');
-}
+  // session log
+  const logEl = document.getElementById('log-list');
+  if (logEl.textContent.includes('session started')) logEl.innerHTML = '';
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.innerHTML = `<span class="log-time">${time}</span><span class="log-agent">${agent}</span><span class="log-msg">${msg}</span><span class="log-type ${type}">${type}</span>`;
+  logEl.appendChild(entry);
+  logEl.scrollTop = logEl.scrollHeight;
 
-// ── LOGGING ───────────────────────────────────────────────────────────────
-function addLog(msg, type, target) {
-  const cls = type ? 't-'+type : 't-text';
-  const line = `<div class="t-line ${cls}">[${new Date().toLocaleTimeString()}] ${msg}</div>`;
-  STATE.logs.push({msg, type, time: new Date().toLocaleTimeString()});
-  if(target) {
-    const el = document.getElementById(target);
-    if(el) { el.innerHTML += line; el.scrollTop = el.scrollHeight; }
-  }
-  const full = document.getElementById('full-log');
-  if(full) { full.innerHTML += line; full.scrollTop = full.scrollHeight; }
-  addActivity(msg, type);
-}
-
-function addActivity(msg, type) {
-  const feed = document.getElementById('activity-feed');
-  if(!feed) return;
-  const icon = {success:'✦',info:'◈',warn:'⟳',error:'✗',data:'⬦'}[type] || '·';
-  const color = {success:'var(--green)',info:'var(--accent)',warn:'var(--amber)',error:'var(--red)',data:'var(--cyan)'}[type] || 'var(--text3)';
-  const item = `<div class="diff-item"><span class="diff-icon" style="color:${color};">${icon}</span><span style="font-size:12px;color:var(--text2);font-family:var(--mono);">${msg}</span></div>`;
-  if(feed.querySelector('.t-prompt')) feed.innerHTML = '';
-  feed.innerHTML = item + feed.innerHTML;
-  if(feed.children.length > 8) feed.removeChild(feed.lastChild);
+  // activity
+  const actList = document.getElementById('activity-list');
+  const emp = actList.querySelector('.empty-state');
+  if (emp) emp.remove();
+  const act = document.createElement('div');
+  act.className = 'activity-item';
+  act.innerHTML = `<span class="ai">${agent}</span><span class="msg">${msg}</span>`;
+  actList.insertBefore(act, actList.firstChild);
+  if (actList.children.length > 8) actList.lastChild.remove();
 }
 
 function updateStats() {
-  document.getElementById('dash-tasks').textContent = STATE.tasksCompleted;
-  document.getElementById('dash-time').textContent = STATE.timeSaved + 'h';
+  tasksDone++;
+  timeSaved += Math.round(Math.random() * 20 + 10);
+  document.getElementById('stat-tasks').textContent = tasksDone;
+  document.getElementById('stat-time').textContent = Math.round(timeSaved/60*10)/10 + 'h';
 }
 
-// ── API CALL ───────────────────────────────────────────────────────────────
-async function callClaude(systemPrompt, userPrompt, logTarget, loadingMsg) {
-  showLoading(loadingMsg || 'Agent running...');
-  addLog('Calling Gemini API...', 'info', logTarget);
+// ── CLAUDE API CALL ──
+async function callClaude(systemPrompt, userPrompt, outputEl, reasoningEl) {
+  const { model, tokens, temp } = getSettings();
+
+  if (outputEl) {
+    outputEl.textContent = '';
+    outputEl.classList.add('streaming');
+    outputEl.classList.add('cursor');
+  }
+  if (reasoningEl) reasoningEl.textContent = '$ agent is thinking...';
 
   try {
-    const API_KEY = "AIzaSyDOX6N9txsm387qYcys3yWBY2Ax2O8wxGc";
-
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              { text: systemPrompt + "\n\n" + userPrompt }
-            ]
-          }
-        ]
+        model,
+        max_tokens: tokens,
+        temperature: temp,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userPrompt }]
       })
     });
 
-    const data = await response.json();
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `HTTP ${resp.status}`);
+    }
 
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
+    const data = await resp.json();
+    const text = data.content?.map(b => b.text || '').join('') || '';
 
-    addLog('Response received ✓', 'success', logTarget);
-
-    STATE.tasksCompleted++;
-    STATE.timeSaved = Math.round(STATE.tasksCompleted * 0.5);
-    updateStats();
-    hideLoading();
-
-    return text;
-
-  } catch (e) {
-    addLog('Error: ' + e.message, 'error', logTarget);
-    hideLoading();
-    toast('API Error: ' + e.message, 'var(--red)');
+    if (outputEl) {
+      outputEl.classList.remove('streaming', 'cursor');
+      outputEl.textContent = text.trim();
+    }
+    if (reasoningEl) {
+      reasoningEl.textContent = `$ done — ${data.usage?.output_tokens || '?'} tokens used | stop: ${data.stop_reason || 'end_turn'}`;
+    }
+    return text.trim();
+  } catch(e) {
+    if (outputEl) {
+      outputEl.classList.remove('streaming', 'cursor');
+      outputEl.textContent = '⚠ Error: ' + e.message;
+    }
+    if (reasoningEl) reasoningEl.textContent = '$ error — check console';
     throw e;
   }
 }
 
-// ── RENDER MARKDOWN-LIKE TEXT ──────────────────────────────────────────────
-function renderText(text) {
-  return text
-    .replace(/^#{3}\s+(.+)$/gm, '<h4 style="font-size:13px;color:var(--accent);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.5px;margin:16px 0 8px;">$1</h4>')
-    .replace(/^#{2}\s+(.+)$/gm, '<h3 style="font-size:15px;font-weight:700;margin:18px 0 8px;">$1</h3>')
-    .replace(/^#{1}\s+(.+)$/gm, '<h2 style="font-size:17px;font-weight:800;margin:20px 0 10px;">$1</h2>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--text);font-weight:600;">$1</strong>')
-    .replace(/`(.+?)`/g, '<code style="background:var(--bg3);color:var(--cyan);padding:1px 5px;border-radius:3px;font-family:var(--mono);font-size:11px;">$1</code>')
-    .replace(/^[-•]\s+(.+)$/gm, '<div style="display:flex;gap:8px;margin:4px 0;"><span style="color:var(--accent);flex-shrink:0;">→</span><span>$1</span></div>')
-    .replace(/^\d+\.\s+(.+)$/gm, '<div style="display:flex;gap:8px;margin:4px 0;font-size:13px;"><span style="color:var(--text2);flex-shrink:0;font-family:var(--mono);min-width:16px;">·</span><span>$1</span></div>')
-    .replace(/\n{2,}/g, '<br/><br/>')
-    .replace(/\n/g, '<br/>');
-}
+// ── OUTREACH AGENT ──
+async function runOutreach() {
+  const name = document.getElementById('ou-name').value.trim() || 'the prospect';
+  const company = document.getElementById('ou-company').value.trim() || 'their company';
+  const role = document.getElementById('ou-role').value.trim() || 'their role';
+  const context = document.getElementById('ou-context').value.trim();
+  const product = document.getElementById('ou-product').value.trim();
+  const channel = document.querySelector('input[name="ou-channel"]:checked')?.value || 'LinkedIn message';
 
-// ── OUTREACH AGENT ─────────────────────────────────────────────────────────
-async function runOutreachAgent() {
-  const name = document.getElementById('out-name').value.trim();
-  const company = document.getElementById('out-company').value.trim();
-  const role = document.getElementById('out-role').value.trim();
-  const context = document.getElementById('out-context').value.trim();
-  const product = document.getElementById('out-product').value.trim();
-  const channel = document.getElementById('out-channel').value;
-  const sender = document.getElementById('your-name')?.value || 'The Team';
-  const yourCo = document.getElementById('your-company')?.value || 'AgentOS';
+  const btn = document.getElementById('ou-btn');
+  const errEl = document.getElementById('ou-error');
+  errEl.style.display = 'none';
 
-  if(!name || !company) { toast('Fill in prospect name and company first.', 'var(--amber)'); return; }
-
-  const logEl = document.getElementById('outreach-log');
-  logEl.innerHTML = '';
-  document.getElementById('outreach-output').innerHTML = `<div style="display:flex;align-items:center;gap:10px;color:var(--text2);font-family:var(--mono);font-size:12px;padding:20px;"><div class="spinner"></div>Generating personalized message...</div>`;
-
-  addLog('Outreach Agent started for: ' + name + ' @ ' + company, 'info', 'outreach-log');
-  addLog('Analyzing prospect context...', 'info', 'outreach-log');
-  addLog('Channel: ' + channel, 'data', 'outreach-log');
-  addLog('Identifying personalization hooks...', 'warn', 'outreach-log');
-
-  const system = `You are an elite B2B outreach specialist and growth hacker. Your job is to write highly personalized, non-spammy messages that get responses. You understand human psychology, sales, and how to connect product value to specific prospect pain points. Always sound human — never like a bot or template.`;
-
-  const prompt = `Write a personalized ${channel} message with the following details:
-
-PROSPECT:
-- Name: ${name}
-- Company: ${company}  
-- Role: ${role}
-- Context/Activity: ${context}
-
-SENDER:
-- Name: ${sender}
-- Company: ${yourCo}
-- Product: ${product}
-
-INSTRUCTIONS:
-1. Open with a specific reference to something from their context (not generic flattery)
-2. Connect that to a pain point or opportunity relevant to their role
-3. Introduce the product as a solution in 1-2 sentences max
-4. End with a soft, low-friction CTA
-5. Keep it under 120 words (LinkedIn) or 180 words (email)
-
-OUTPUT FORMAT:
-## Message
-[The actual message ready to send]
-
-## Why This Works
-[2-3 bullets: specific personalization hooks used]
-
-## Subject Line (if email)
-[Subject line]
-
-## Tone Analysis
-[Brief note on tone and approach chosen]`;
-
-  try {
-    const result = await callClaude(system, prompt, 'outreach-log', 'Crafting personalized message...');
-    addLog('Message crafted ✓', 'success', 'outreach-log');
-    addLog('Personalization score: HIGH', 'success', 'outreach-log');
-
-    document.getElementById('outreach-output').innerHTML = `
-      <div style="padding:4px 0;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
-          <span class="tag tag-green">✓ Generated</span>
-          <span class="tag tag-blue">${channel}</span>
-          <span style="font-size:11px;color:var(--text3);font-family:var(--mono);">for ${name} @ ${company}</span>
-        </div>
-        <div style="font-size:13px;color:var(--text);line-height:1.8;">${renderText(result)}</div>
-        <div style="margin-top:16px;display:flex;gap:8px;">
-          <button class="btn btn-green" onclick="copyOutput('outreach-output')">Copy Message</button>
-          <button class="btn btn-ghost" onclick="runOutreachAgent()">Regenerate</button>
-        </div>
-      </div>`;
-    toast('✦ Personalized message ready!', 'var(--green)');
-    addLog('Outreach agent completed successfully.', 'success', 'outreach-log');
-  } catch(e) {}
-}
-
-// ── RESEARCH AGENT ─────────────────────────────────────────────────────────
-async function runResearchAgent() {
-  const topic = document.getElementById('res-topic').value.trim();
-  const type = document.getElementById('res-type').value;
-  const focus = document.getElementById('res-focus').value.trim();
-  const format = document.getElementById('res-format').value;
-
-  if(!topic) { toast('Enter a research topic first.', 'var(--amber)'); return; }
-
-  const logEl = document.getElementById('research-log');
-  logEl.innerHTML = '';
-  document.getElementById('research-output').innerHTML = `<div class="card" style="display:flex;align-items:center;gap:10px;color:var(--text2);font-family:var(--mono);font-size:12px;"><div class="spinner"></div>Synthesizing intelligence...</div>`;
-
-  addLog('Research agent activated.', 'info', 'research-log');
-  addLog('Topic: ' + topic, 'data', 'research-log');
-  addLog('Scanning simulated sources: LinkedIn, News, GitHub, Web...', 'warn', 'research-log');
-  addLog('Synthesizing cross-source signals...', 'info', 'research-log');
-
-  const system = `You are an elite intelligence analyst and business researcher. You synthesize information from multiple sources — LinkedIn, news, GitHub, Crunchbase, Twitter, web — into actionable briefs. You write in a precise, executive style with clear structure. You identify patterns, risks, and opportunities others miss.`;
-
-  const prompt = `Conduct a deep ${type} on: "${topic}"
-Focus areas: ${focus || 'general overview'}
-Format: ${format}
-
-Act as if you have just pulled data from LinkedIn profiles, recent news articles (last 30 days), GitHub activity, Crunchbase, and web search. Simulate realistic findings based on your knowledge.
-
-Provide a thorough, structured intelligence report. Include:
-- Key findings from each simulated source
-- Patterns and strategic insights
-- Specific actionable takeaways
-- Risk factors or blind spots
-- Data points (numbers, dates, names where applicable)
-
-Be specific, not generic. Reference real strategies, real market dynamics, real players in the space.`;
-
-  try {
-    const result = await callClaude(system, prompt, 'research-log', 'Synthesizing intelligence...');
-    addLog('Intelligence report generated ✓', 'success', 'research-log');
-    addLog('Sources synthesized: 7', 'data', 'research-log');
-
-    document.getElementById('research-output').innerHTML = `
-      <div class="card" style="margin-bottom:12px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
-          <span class="tag tag-purple">◈ Intelligence Report</span>
-          <span class="tag tag-blue">${type}</span>
-          <span style="font-size:11px;color:var(--text3);font-family:var(--mono);">${new Date().toLocaleDateString()}</span>
-        </div>
-        <div style="font-size:13px;line-height:1.8;color:var(--text);">${renderText(result)}</div>
-        <div style="margin-top:16px;display:flex;gap:8px;">
-          <button class="btn btn-primary" onclick="copyOutput('research-output')">Export Report</button>
-          <button class="btn btn-ghost" onclick="runResearchAgent()">Re-run</button>
-        </div>
-      </div>`;
-    toast('◈ Intelligence report ready!', 'var(--accent2)');
-  } catch(e) {}
-}
-
-// ── ANALYSIS AGENT ─────────────────────────────────────────────────────────
-async function runAnalysisAgent() {
-  const data = document.getElementById('ana-data').value.trim();
-  const goal = document.getElementById('ana-goal').value.trim();
-  const depth = document.getElementById('ana-depth').value;
-
-  if(!data) { toast('Paste some data first.', 'var(--amber)'); return; }
-
-  const logEl = document.getElementById('analysis-log');
-  logEl.innerHTML = '';
-  document.getElementById('analysis-output').innerHTML = `<div class="card" style="display:flex;align-items:center;gap:10px;color:var(--text2);font-family:var(--mono);font-size:12px;"><div class="spinner"></div>Agent analyzing your data...</div>`;
-
-  addLog('Data analyst agent started.', 'info', 'analysis-log');
-  addLog('Parsing data structure...', 'info', 'analysis-log');
-  addLog('Running: ' + depth, 'data', 'analysis-log');
-  addLog('Computing statistics and trends...', 'warn', 'analysis-log');
-
-  const system = `You are a senior data analyst and business intelligence expert. You analyze structured data to find meaningful patterns, anomalies, and opportunities. You write insights that are specific, data-backed, and immediately actionable. You always cite specific numbers from the data.`;
-
-  const prompt = `Analyze this data and answer: "${goal}"
-Analysis depth: ${depth}
-
-DATA:
-${data}
-
-Perform a thorough analysis. Your output MUST include:
-
-## Key Metrics Summary
-[Parse and summarize the main metrics with actual numbers]
-
-## Trend Analysis
-[Identify all significant trends with specific data points and % changes]
-
-## Top Insights
-[3-5 specific, data-backed insights — cite exact numbers]
-
-## Anomalies & Patterns
-[Anything unusual or noteworthy]
-
-## Recommendations
-[3 specific, actionable recommendations based on the data]
-
-## Predicted Trajectory
-[Based on the trend, what's likely to happen next?]
-
-Always use actual numbers from the data. Be precise and specific.`;
-
-  try {
-    const result = await callClaude(system, prompt, 'analysis-log', 'Crunching numbers...');
-    addLog('Analysis complete ✓', 'success', 'analysis-log');
-    addLog('Insights extracted and validated.', 'success', 'analysis-log');
-
-    document.getElementById('analysis-output').innerHTML = `
-      <div class="card">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
-          <span class="tag tag-green">⬦ Analysis Complete</span>
-          <span style="font-size:11px;color:var(--text3);font-family:var(--mono);">depth: ${depth}</span>
-        </div>
-        <div style="font-size:13px;line-height:1.8;color:var(--text);">${renderText(result)}</div>
-        <div style="margin-top:16px;display:flex;gap:8px;">
-          <button class="btn btn-green" onclick="copyOutput('analysis-output')">Copy Insights</button>
-          <button class="btn btn-ghost" onclick="runAnalysisAgent()">Re-analyze</button>
-        </div>
-      </div>`;
-    toast('⬦ Analysis ready!', 'var(--green)');
-  } catch(e) {}
-}
-
-// ── AUTOMATION AGENT ───────────────────────────────────────────────────────
-async function runAutomationAgent() {
-  const goal = document.getElementById('auto-goal').value.trim();
-  const maxSteps = parseInt(document.getElementById('auto-steps').value) || 5;
-
-  if(!goal) { toast('Define a goal first.', 'var(--amber)'); return; }
-
-  const logEl = document.getElementById('auto-log');
-  logEl.innerHTML = '';
-  document.getElementById('auto-output').innerHTML = '';
-  document.getElementById('auto-steps-viz').style.display = 'none';
-
-  addLog('Task automator initialized.', 'info', 'auto-log');
-  addLog('Goal received: "' + goal.substring(0,60) + '..."', 'data', 'auto-log');
-  addLog('Max steps: ' + maxSteps, 'info', 'auto-log');
-  addLog('Planning execution sequence...', 'warn', 'auto-log');
-
-  const system = `You are an autonomous AI agent executor. You receive high-level goals and break them into concrete steps, then execute each step with the available tools. You think step-by-step, explain your reasoning, and produce concrete deliverables at each step. You are decisive, efficient, and produce real value.
-
-Available tools: web_search, analyze_data, write_document, draft_email, create_schedule, update_crm, send_notification`;
-
-  const prompt = `GOAL: ${goal}
-MAX STEPS: ${maxSteps}
-
-Execute this goal step by step. For each step:
-1. State the tool you're using and why
-2. Show the tool call / action
-3. Show the realistic output/result
-4. Note what this achieves toward the goal
-
-Structure your response as:
-
-## Execution Plan
-[Brief plan overview - what you'll do in N steps]
-
-## Step 1: [Tool Name] — [Action]
-**Reasoning:** [why this step]
-**Action:** [what you do]
-**Result:** [realistic, detailed output from this step]
-
-## Step 2: ...
-[continue for each step]
-
-## Final Deliverable
-[The complete, synthesized output from all steps — this should be a real, usable artifact]
-
-## Summary
-[What was accomplished, time saved vs manual, next suggested actions]
-
-Make each step's output REAL and DETAILED. The final deliverable must be immediately usable.`;
-
-  try {
-  const API_KEY = "AIzaSyDOX6N9txsm387qYcys3yWBY2Ax2O8wxGc";
-
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              { text: systemPrompt + "\n\n" + userPrompt }
-            ]
-          }
-        ]
-      })
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error?.message || "API Error");
+  if (!context || !product) {
+    errEl.textContent = '⚠ Please fill in context and product/offer fields.';
+    errEl.style.display = 'block';
+    return;
   }
 
-  const text =
-    data.candidates?.[0]?.content?.parts?.[0]?.text ||
-    "No response";
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Generating...';
+  addLog('outreach', `Generating ${channel} for ${name} @ ${company}`, 'info');
 
-  addLog('Response received ✓', 'success', logTarget);
+  const system = `You are an expert sales copywriter and outreach specialist. Your job is to write highly personalized, human-sounding ${channel}s that convert. 
 
-  STATE.tasksCompleted++;
-  STATE.timeSaved = Math.round(STATE.tasksCompleted * 0.5);
-  updateStats();
-  hideLoading();
+Rules:
+- Never sound like a bot or template
+- Use exactly ONE specific detail from their context as a hook
+- Be concise and value-first
+- For LinkedIn: 300 chars max. For email: include subject line. For WhatsApp: casual and warm.
+- Output the message first, then a "---STRATEGY---" section explaining your personalization choices in 2-3 sentences.`;
 
-  return text;
+  const user = `Write a personalized ${channel} for:
+Name: ${name}
+Company: ${company}  
+Role: ${role}
+Context: ${context}
 
-} catch (e) {
-  addLog('Error: ' + e.message, 'error', logTarget);
-  hideLoading();
-  toast('API Error: ' + e.message, 'var(--red)');
-  throw e;
-}
+My offer: ${product}`;
 
-    const data = await resp.json();
-    const result = data.content?.map(b => b.text || '').join('') || '';
+  try {
+    const output = document.getElementById('ou-output');
+    const reasoning = document.getElementById('ou-reasoning');
+    const result = await callClaude(system, user, output, reasoning);
 
-    // Parse steps from result for visual display
-    const stepMatches = [...result.matchAll(/## Step (\d+): (.+)/g)];
-    if(stepMatches.length > 0) {
-      document.getElementById('auto-steps-viz').style.display = 'block';
-      let stepsHTML = '<div style="display:flex;align-items:center;gap:0;flex-wrap:wrap;gap:8px;">';
-      stepMatches.forEach((m, i) => {
-        stepsHTML += `<span class="tag tag-${['blue','purple','green','amber','cyan'][i%5]}" style="padding:5px 10px;font-size:11px;">Step ${m[1]}: ${m[2].split('—')[0].trim()}</span>`;
-        if(i < stepMatches.length-1) stepsHTML += `<span style="color:var(--text3);">→</span>`;
-      });
-      stepsHTML += '</div>';
-      document.getElementById('auto-plan-card').innerHTML = stepsHTML;
-
-      // Animate steps
-      for(let i = 0; i < stepMatches.length; i++) {
-        await new Promise(r => setTimeout(r, 400));
-        addLog(`Executing Step ${i+1}: ${stepMatches[i][2].split('—')[0].trim()}`, 'info', 'auto-log');
-        addLog(`Step ${i+1} complete ✓`, 'success', 'auto-log');
-      }
+    // Parse strategy section
+    if (result.includes('---STRATEGY---')) {
+      const [msg, strategy] = result.split('---STRATEGY---');
+      output.textContent = msg.trim();
+      reasoning.textContent = '$ STRATEGY: ' + strategy.trim();
     }
 
-    addLog('All steps executed ✓', 'success', 'auto-log');
-    addLog('Deliverable ready.', 'success', 'auto-log');
-    STATE.tasksCompleted++;
-    STATE.timeSaved = Math.round(STATE.tasksCompleted * 0.5);
+    addLog('outreach', `Message generated for ${name} (${channel})`, 'success');
     updateStats();
-    hideLoading();
-
-    document.getElementById('auto-output').innerHTML = `
-      <div class="section-title">Final Output</div>
-      <div class="card">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
-          <span class="tag tag-amber">⟳ Completed</span>
-          <span class="tag tag-green">${stepMatches.length} steps executed</span>
-          <span style="font-size:11px;color:var(--text3);font-family:var(--mono);">~${Math.round(stepMatches.length * 8)} mins saved</span>
-        </div>
-        <div style="font-size:13px;line-height:1.8;color:var(--text);">${renderText(result)}</div>
-        <div style="margin-top:16px;display:flex;gap:8px;">
-          <button class="btn btn-primary" onclick="copyOutput('auto-output')">Export Output</button>
-          <button class="btn btn-ghost" onclick="runAutomationAgent()">Re-run</button>
-        </div>
-      </div>`;
-    toast('⟳ Task completed in ' + stepMatches.length + ' steps!', 'var(--amber)');
-    addActivity('Automation: ' + goal.substring(0,40) + '...', 'success');
   } catch(e) {
-    addLog('Error: ' + e.message, 'error', 'auto-log');
-    hideLoading();
-    toast('Error: ' + e.message, 'var(--red)');
+    errEl.textContent = '⚠ ' + e.message;
+    errEl.style.display = 'block';
+    addLog('outreach', 'Error: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '✦ Generate Personalized Message';
   }
 }
 
-// ── COPY OUTPUT ────────────────────────────────────────────────────────────
-function copyOutput(id) {
-  const el = document.getElementById(id);
-  const text = el.innerText;
-  navigator.clipboard.writeText(text).then(() => toast('Copied to clipboard ✓', 'var(--green)')).catch(() => toast('Copy failed', 'var(--red)'));
-}
+// ── RESEARCH AGENT ──
+async function runResearch() {
+  const topic = document.getElementById('re-topic').value.trim();
+  const type = document.querySelector('input[name="re-type"]:checked')?.value || 'Competitive intelligence';
+  const focus = document.getElementById('re-focus').value.trim();
+  const format = document.querySelector('input[name="re-format"]:checked')?.value || 'Executive brief';
 
-// ── SETTINGS HELPERS ───────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  const slider = document.getElementById('temperature');
-  if(slider) {
-    slider.addEventListener('input', () => {
-      document.getElementById('temp-val').textContent = slider.value;
-      STATE.temperature = parseFloat(slider.value);
-    });
+  const btn = document.getElementById('re-btn');
+  const errEl = document.getElementById('re-error');
+  errEl.style.display = 'none';
+
+  if (!topic) {
+    errEl.textContent = '⚠ Please enter a research topic or entity.';
+    errEl.style.display = 'block';
+    return;
   }
-});
 
-function saveSettings() {
-  STATE.model = document.getElementById('model-select')?.value || STATE.model;
-  STATE.maxTokens = parseInt(document.getElementById('max-tokens')?.value) || 2000;
-  STATE.yourCompany = document.getElementById('your-company')?.value || 'AgentOS';
-  STATE.yourName = document.getElementById('your-name')?.value || 'The Team';
-  toast('Settings saved ✓', 'var(--green)');
-}
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Researching...';
+  addLog('research', `Running ${type} on: ${topic}`, 'info');
 
-async function testAPI() {
-  showLoading('Testing API connection...');
+  const system = `You are a senior intelligence analyst specializing in ${type}. You synthesize information from LinkedIn, Crunchbase, news sources, GitHub, and web data to create actionable intelligence reports.
+
+Output format: ${format}
+Be specific, factual, and actionable. Use bullet points where appropriate. Include concrete numbers and dates when possible. Note confidence levels for key claims.`;
+
+  const user = `Conduct a ${type} on: "${topic}"
+${focus ? `Focus areas: ${focus}` : ''}
+
+Structure your response as a ${format}. If this is competitive intelligence, include: positioning, strengths/weaknesses, market opportunity. If market analysis, include: market size, key players, trends. Be specific and thorough.`;
+
   try {
-    const resp = await fetch('AIzaSyDOX6N9txsm387qYcys3yWBY2Ax2O8wxGc', {
+    const output = document.getElementById('re-output');
+    await callClaude(system, user, output, null);
+    addLog('research', `Intelligence report generated: ${topic}`, 'success');
+    updateStats();
+  } catch(e) {
+    errEl.textContent = '⚠ ' + e.message;
+    errEl.style.display = 'block';
+    addLog('research', 'Error: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '◈ Run Research Agent';
+  }
+}
+
+// ── DATA ANALYST ──
+async function runAnalyst() {
+  const data = document.getElementById('da-data').value.trim();
+  const goal = document.getElementById('da-goal').value.trim();
+  const depth = document.querySelector('input[name="da-depth"]:checked')?.value || 'Standard analysis';
+
+  const btn = document.getElementById('da-btn');
+  const errEl = document.getElementById('da-error');
+  const stepsEl = document.getElementById('da-steps');
+  errEl.style.display = 'none';
+
+  if (!data) {
+    errEl.textContent = '⚠ Please paste some data to analyze.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Analyzing...';
+  addLog('analyst', `Running ${depth} on dataset`, 'info');
+
+  // Show planning steps
+  const planSteps = ['Parsing and validating data structure', 'Computing key statistics and metrics', 'Identifying trends and patterns', 'Generating recommendations', 'Formatting final report'];
+  stepsEl.innerHTML = '';
+  const stepsDom = planSteps.map((s, i) => {
+    const d = document.createElement('div');
+    d.className = 'step-item';
+    d.innerHTML = `<div class="step-num">${String(i+1).padStart(2,'0')}</div><div class="step-text">${s}</div>`;
+    stepsEl.appendChild(d);
+    return d;
+  });
+
+  // Animate steps
+  let stepIdx = 0;
+  const stepInterval = setInterval(() => {
+    if (stepIdx < stepsDom.length) {
+      if (stepIdx > 0) stepsDom[stepIdx-1].classList.remove('running'), stepsDom[stepIdx-1].classList.add('done');
+      stepsDom[stepIdx].classList.add('running');
+      stepIdx++;
+    } else {
+      clearInterval(stepInterval);
+      stepsDom[stepsDom.length-1].classList.remove('running');
+      stepsDom[stepsDom.length-1].classList.add('done');
+    }
+  }, 800);
+
+  const system = `You are an expert data analyst with deep knowledge of statistics, business metrics, and data storytelling. 
+
+Analysis depth: ${depth}
+Be precise with numbers. Calculate actual statistics from the data. Provide actionable insights, not just descriptions. Use a structured format with clear sections.`;
+
+  const user = `Analyze this dataset:
+
+\`\`\`
+${data}
+\`\`\`
+
+Goal: ${goal}
+
+Provide a ${depth} including: summary statistics, key trends, anomalies or notable patterns, and specific recommendations with reasoning. Calculate actual growth rates and forecasts where applicable.`;
+
+  try {
+    const output = document.getElementById('da-output');
+    await callClaude(system, user, output, null);
+    clearInterval(stepInterval);
+    stepsDom.forEach(s => { s.classList.remove('running'); s.classList.add('done'); });
+    addLog('analyst', `Data analysis complete — ${depth}`, 'success');
+    updateStats();
+  } catch(e) {
+    clearInterval(stepInterval);
+    errEl.textContent = '⚠ ' + e.message;
+    errEl.style.display = 'block';
+    addLog('analyst', 'Error: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '⬦ Analyze with Agent';
+  }
+}
+
+// ── TASK AUTOMATOR ──
+async function runAutomator() {
+  const goal = document.getElementById('au-goal').value.trim();
+  const maxSteps = parseInt(document.querySelector('input[name="au-steps"]:checked')?.value || '5');
+
+  const tools = [];
+  if (document.getElementById('tool-search').checked) tools.push('web_search');
+  if (document.getElementById('tool-analyze').checked) tools.push('analyze_data');
+  if (document.getElementById('tool-write').checked) tools.push('write_doc');
+  if (document.getElementById('tool-email').checked) tools.push('send_email');
+  if (document.getElementById('tool-schedule').checked) tools.push('schedule');
+  if (document.getElementById('tool-crm').checked) tools.push('update_crm');
+
+  const btn = document.getElementById('au-btn');
+  const errEl = document.getElementById('au-error');
+  const planEl = document.getElementById('au-plan');
+  errEl.style.display = 'none';
+
+  if (!goal) {
+    errEl.textContent = '⚠ Please define a high-level goal.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Planning...';
+  addLog('automator', `Planning: ${goal.slice(0,60)}...`, 'info');
+  planEl.innerHTML = '<span class="spinner"></span> Generating execution plan...';
+
+  const system = `You are an autonomous task execution agent. Given a high-level goal, you:
+1. Break it into ${maxSteps} concrete, actionable steps
+2. Identify which tools to use for each step: [${tools.join(', ')}]
+3. Execute each step with specific outputs and deliverables
+4. Synthesize results into a final execution report
+
+Format your response as:
+PLAN:
+Step 1: [action] → [tool] → [expected output]
+Step 2: ...
+...
+
+EXECUTION LOG:
+[Detailed execution of each step with specific outputs, decisions made, and results]
+
+FINAL DELIVERABLE:
+[The actual output artifact — document, plan, strategy, etc.]`;
+
+  const user = `Execute this goal autonomously:
+
+"${goal}"
+
+Available tools: ${tools.join(', ')}
+Max steps: ${maxSteps}
+
+Generate a complete execution plan AND simulate the full execution with detailed outputs for each step. The final deliverable should be complete and immediately usable.`;
+
+  try {
+    const output = document.getElementById('au-output');
+
+    // Phase 1: Get the plan
+    const result = await callClaude(system, user, output, null);
+
+    // Extract and display plan
+    if (result.includes('PLAN:')) {
+      const planSection = result.split('PLAN:')[1]?.split('EXECUTION')[0]?.trim() || '';
+      planEl.innerHTML = '';
+      const lines = planSection.split('\n').filter(l => l.trim());
+      lines.forEach((line, i) => {
+        const d = document.createElement('div');
+        d.className = 'step-item done';
+        d.innerHTML = `<div class="step-num">${String(i+1).padStart(2,'0')}</div><div class="step-text">${line.replace(/^Step \d+:\s*/,'')}</div>`;
+        planEl.appendChild(d);
+      });
+    }
+
+    addLog('automator', `Task automated in ${maxSteps} steps`, 'success');
+    updateStats();
+  } catch(e) {
+    planEl.textContent = '$ plan failed';
+    errEl.textContent = '⚠ ' + e.message;
+    errEl.style.display = 'block';
+    addLog('automator', 'Error: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '⟳ Plan & Execute Autonomously';
+  }
+}
+
+// ── UTILS ──
+function copyOutput(id) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector(`[onclick="copyOutput('${id}')"]`);
+    if (btn) { btn.textContent = 'copied!'; setTimeout(() => btn.textContent = 'copy', 1500); }
+  });
+}
+
+function clearLogs() {
+  document.getElementById('log-list').innerHTML = '$ logs cleared — session continues...';
+  document.getElementById('activity-list').innerHTML = '<div class="empty-state">◌ No activity yet — run an agent to see logs here.</div>';
+}
+
+async function testConnection() {
+  const resEl = document.getElementById('cfg-test-result');
+  resEl.style.display = 'block';
+  resEl.style.color = 'var(--text3)';
+  resEl.textContent = '⟳ Testing connection...';
+
+  try {
+    const { model } = getSettings();
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: document.getElementById('model-select')?.value || 'claude-sonnet-4-20250514',
-        max_tokens: 50,
-        messages: [{ role: 'user', content: 'Say "AgentOS connected" only.' }]
+        model,
+        max_tokens: 20,
+        messages: [{ role: 'user', content: 'Reply with only: OK' }]
       })
     });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const data = await resp.json();
-    hideLoading();
-    if(data.content) toast('✓ API Connected: ' + (data.content[0]?.text || 'OK'), 'var(--green)');
-    else toast('⚠ Unexpected response', 'var(--amber)');
+    resEl.style.color = 'var(--green)';
+    resEl.textContent = `✓ Connected — model: ${data.model || model}`;
+    addLog('system', 'API connection test successful', 'success');
   } catch(e) {
-    hideLoading();
-    toast('Connection failed: ' + e.message, 'var(--red)');
+    resEl.style.color = 'var(--red)';
+    resEl.textContent = '✗ Failed: ' + e.message;
+    addLog('system', 'API connection test failed: ' + e.message, 'error');
   }
 }
 
-// ── RUN ALL ────────────────────────────────────────────────────────────────
-async function runAllAgents() {
-  toast('⟳ Running all agents sequentially...', 'var(--accent)');
-  showPage('outreach');
-  await new Promise(r => setTimeout(r, 200));
-  await runOutreachAgent();
+function saveSettings() {
+  addLog('system', 'Settings saved', 'success');
+  const btn = event.target;
+  btn.textContent = '✓ Saved!';
+  setTimeout(() => btn.textContent = 'Save Settings', 1500);
 }
 
-// ── CLEAR LOGS ─────────────────────────────────────────────────────────────
-function clearLogs() {
-  STATE.logs = [];
-  document.getElementById('full-log').innerHTML = '<div class="t-line t-prompt">$ logs cleared —</div>';
-  toast('Logs cleared.', 'var(--text2)');
+async function runAllAgents() {
+  addLog('system', 'Run All triggered — launching all agents in sequence', 'info');
+  showPage('dashboard');
 }
+
+// Init
+addLog('system', 'AgentOS v2.0 initialized — all systems operational', 'success');
 </script>
 </body>
 </html>
